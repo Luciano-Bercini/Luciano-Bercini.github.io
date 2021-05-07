@@ -1,0 +1,28 @@
+body {
+    font-family: "5x5 square";
+    background-color: black;
+    color:green;
+}
+h1 {
+    text-align: center;
+}
+h2 {
+    text-align: center;
+}
+.TopNav {
+    text-align: center;
+    font-size: 2em;
+}
+.TopNav a:hover {
+    font-size: 120%;
+}
+a {
+    text-decoration: none;
+    color:blue;
+}
+a:hover {
+    color: #61fff8;
+}
+a:active {
+    color: #d556ff;
+}
