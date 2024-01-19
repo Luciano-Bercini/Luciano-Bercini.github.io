@@ -1,7 +1,7 @@
 function LoadHeader() {
   let header = document.createElement("header");
   let nav = document.createElement("nav");
-  nav.className = "TopNav";
+  nav.className = "top-nav";
 
   let homeLink = document.createElement("a");
   homeLink.href = "index.html";

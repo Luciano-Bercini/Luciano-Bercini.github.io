@@ -14,11 +14,13 @@ h1 {
 }
 
 .main {
+  margin: auto;
   text-align: center;
   font-size: 2em;
+  padding: 70px 0;
 }
 
-.TopNav {
+.top-nav {
   display: flex;
   justify-content: space-between;
   text-align: center;
@@ -71,19 +73,21 @@ a:active {
   flex: 2;
 }
 
-.platform-buttons a {
-  display: inline-block;
-  margin-right: 10px;
-  margin-bottom: 10px;
-  padding: 8px 16px;
-  background-color: var(--yellow);
-  color: var(--black);
-  text-decoration: none;
-  border-radius: 5px;
+.platforms {
+  width: 80%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  margin: auto;
 }
 
-.platform-buttons a:hover {
-  background-color: var(--white);
+.platform-button {
+  width: 75px;
+  height: 75px;
+  padding: 20px;
+  margin: 10px;
+  align-self: center;
 }
 
 .features {
