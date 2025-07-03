@@ -7,6 +7,10 @@
 body {
   background-color: var(--black);
   color: var(--white);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
 }
 
 h1 {
