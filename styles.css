@@ -9,7 +9,7 @@ body {
   color: var(--white);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
-  margin: auto;
+  margin: 0;
   padding-left: 3vw;
   padding-right: 3vw;
 }
