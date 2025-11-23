@@ -10,7 +10,8 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   margin: auto;
-  padding: 5vw;
+  padding-left: 3vw;
+  padding-right: 3vw;
 }
 
 h1 {
