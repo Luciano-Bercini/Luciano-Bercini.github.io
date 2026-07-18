@@ -1,44 +1,930 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="styles.css" rel="stylesheet" />
-    <title>Homepage</title>
+    <title>Luciano Bercini — Indie Game Developer · Arcadium Series</title>
+    <meta
+      name="description"
+      content="Portfolio of Luciano Bercini, indie game developer behind the Arcadium series — retro-arcade space shooters on Steam, the App Store and Google Play."
+    />
+    <meta property="og:title" content="Luciano Bercini — Indie Game Developer" />
+    <meta
+      property="og:description"
+      content="Retro-arcade space shooters, hand-crafted by a one-man studio. Play the Arcadium series on Steam, iOS and Android."
+    />
+    <meta
+      property="og:image"
+      content="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2352670/32764cb8d5112fb366cc49e7ff2823899a509e2c/header.jpg"
+    />
+    <meta property="og:type" content="website" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👾</text></svg>"
+    />
+
+    <!-- Asset hosts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://is1-ssl.mzstatic.com" />
+    <link rel="preconnect" href="https://shared.fastly.steamstatic.com" />
+    <link rel="preconnect" href="https://i.ytimg.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind (Play CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              space: { 950: "#05060f", 900: "#0a0d1e", 800: "#12152e" },
+              neon: { cyan: "#3ee0ff", magenta: "#ff4ecd", violet: "#8b5cf6" },
+            },
+            fontFamily: {
+              display: ['"Space Grotesk"', "ui-sans-serif", "system-ui", "sans-serif"],
+              pixel: ['"Press Start 2P"', "ui-monospace", "monospace"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html {
+        scroll-padding-top: 6rem;
+        background: #05060f;
+      }
+      body {
+        font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+      }
+      ::selection {
+        background: #3ee0ff;
+        color: #05060f;
+      }
+      :focus-visible {
+        outline: 2px solid #3ee0ff;
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+
+      /* ---------- Atmosphere layers ---------- */
+      #starfield {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .nebula {
+        position: fixed;
+        z-index: 0;
+        border-radius: 9999px;
+        filter: blur(90px);
+        pointer-events: none;
+        will-change: transform;
+      }
+      .nebula-a {
+        width: 55vmax;
+        height: 55vmax;
+        top: -18vmax;
+        right: -14vmax;
+        background: radial-gradient(circle, rgba(62, 224, 255, 0.16), transparent 65%);
+      }
+      .nebula-b {
+        width: 48vmax;
+        height: 48vmax;
+        top: 55vh;
+        left: -18vmax;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 65%);
+      }
+      .nebula-c {
+        width: 42vmax;
+        height: 42vmax;
+        top: 150vh;
+        right: -12vmax;
+        background: radial-gradient(circle, rgba(255, 78, 205, 0.1), transparent 65%);
+      }
+      .vignette {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: radial-gradient(ellipse at center, transparent 55%, rgba(3, 4, 10, 0.55) 100%);
+      }
+      .scanlines {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        pointer-events: none;
+        opacity: 0.05;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.6) 0 1px,
+          transparent 1px 3px
+        );
+      }
+
+      /* ---------- Typography effects ---------- */
+      .text-outline {
+        color: transparent;
+        -webkit-text-stroke: 2px rgba(226, 232, 240, 0.85);
+      }
+      @media (max-width: 640px) {
+        .text-outline {
+          -webkit-text-stroke-width: 1.2px;
+        }
+      }
+      .text-gradient {
+        background: linear-gradient(92deg, #3ee0ff 5%, #8b5cf6 55%, #ff4ecd 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      /* ---------- Marquee ---------- */
+      .marquee-track {
+        display: flex;
+        width: max-content;
+        animation: marquee 32s linear infinite;
+      }
+      @keyframes marquee {
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* ---------- Bento cards ---------- */
+      .card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+        transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+      }
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        background: radial-gradient(
+          540px circle at var(--mx, 50%) var(--my, 50%),
+          rgba(62, 224, 255, 0.1),
+          transparent 55%
+        );
+        pointer-events: none;
+      }
+      @media (hover: hover) {
+        .card:hover {
+          border-color: rgba(62, 224, 255, 0.4);
+          box-shadow: 0 0 42px rgba(62, 224, 255, 0.12), 0 24px 48px -24px rgba(0, 0, 0, 0.8);
+          transform: translateY(-4px);
+        }
+        .card:hover::before {
+          opacity: 1;
+        }
+      }
+      .card > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ---------- Store pills ---------- */
+      .store-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.65rem 1rem;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: #e2e8f0;
+        transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+      }
+      @media (hover: hover) {
+        .store-pill:hover {
+          border-color: rgba(62, 224, 255, 0.65);
+          background: rgba(62, 224, 255, 0.1);
+          transform: translateY(-2px);
+        }
+      }
+      .store-pill:active {
+        transform: scale(0.97);
+      }
+
+      /* ---------- Lite YouTube facade ---------- */
+      .yt-lite {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 200px;
+        cursor: pointer;
+        border: 0;
+        padding: 0;
+        background: #000;
+        text-align: inherit;
+      }
+      .yt-lite img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.85;
+        transition: opacity 0.3s ease, transform 0.5s ease;
+      }
+      @media (hover: hover) {
+        .yt-lite:hover img {
+          opacity: 1;
+          transform: scale(1.04);
+        }
+      }
+      .yt-lite .play-btn {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: grid;
+        place-items: center;
+        width: 4.25rem;
+        height: 4.25rem;
+        border-radius: 9999px;
+        background: rgba(5, 6, 15, 0.72);
+        border: 1px solid rgba(62, 224, 255, 0.55);
+        box-shadow: 0 0 30px rgba(62, 224, 255, 0.35);
+        transition: transform 0.25s ease;
+      }
+      @media (hover: hover) {
+        .yt-lite:hover .play-btn {
+          transform: translate(-50%, -50%) scale(1.08);
+        }
+      }
+      .yt-lite iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      /* ---------- Motion safety ---------- */
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        .marquee-track {
+          animation: none;
+        }
+        .card,
+        .store-pill,
+        .yt-lite img,
+        .yt-lite .play-btn {
+          transition: none;
+        }
+      }
+    </style>
   </head>
-  <body>
-    <p class="main">
-      Hi there!<br />
-      Thank you for stepping into my world of game development!<br />
-      I'm Luciano, a passionate indie game developer dedicated to creating
-      enjoyable gaming experiences. <br />
-      Whether you're a fellow developer, a gaming enthusiast, or just curious
-      about the magic behind the pixels,<br />
-      I invite you to try and explore my creations!<br />
-      <div class="platforms">
-      <a
-        href="https://play.google.com/store/apps/dev?id=5177674863654001962"
-        target="_blank">
-        <img class="platform-button"
-          src="images/stores/play-store.png"
-          alt="Google Play Developer's Page"/>
+
+  <body class="bg-space-950 text-slate-300 antialiased overflow-x-hidden">
+    <a
+      href="#games"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-neon-cyan focus:px-4 focus:py-2 focus:font-semibold focus:text-space-950"
+      >Skip to content</a
+    >
+
+    <!-- Atmosphere -->
+    <canvas id="starfield" aria-hidden="true"></canvas>
+    <div class="nebula nebula-a" data-depth="0.25" aria-hidden="true"></div>
+    <div class="nebula nebula-b" data-depth="0.45" aria-hidden="true"></div>
+    <div class="nebula nebula-c" data-depth="0.3" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="scanlines" aria-hidden="true"></div>
+
+    <!-- ============ NAV ============ -->
+    <header
+      id="site-header"
+      class="fixed inset-x-0 top-0 z-50 transition-colors duration-300"
+    >
+      <nav
+        class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8"
+        aria-label="Main navigation"
+      >
+        <a href="#top" class="group flex items-center gap-3">
+          <span
+            class="grid h-9 w-9 place-items-center rounded-lg border border-neon-cyan/50 bg-space-900 font-pixel text-[0.6rem] text-neon-cyan shadow-[0_0_18px_rgba(62,224,255,0.35)]"
+            aria-hidden="true"
+            >LB</span
+          >
+          <span class="font-display text-sm font-semibold tracking-wide text-white"
+            >Luciano&nbsp;Bercini</span
+          >
         </a>
-      <a
-        href="https://apps.apple.com/it/developer/luciano-bercini/id1553291661"
-        target="_blank">
-        <img class="platform-button"
-          src="images/stores/app-store.png"
-          alt="Apple Store Developer's Page" />
-      </a>
-      <a
-        href="https://store.steampowered.com/search/?developer=Luciano%20Bercini"
-        target="_blank">
-        <img class="platform-button"
-        src="images/stores/steam.png"
-        alt="Steam Developer's Page" />
-        </a>
+
+        <div class="hidden items-center gap-8 md:flex">
+          <a href="#games" class="text-sm text-slate-300 transition-colors hover:text-neon-cyan">Games</a>
+          <a href="#about" class="text-sm text-slate-300 transition-colors hover:text-neon-cyan">About</a>
+          <a href="#contact" class="text-sm text-slate-300 transition-colors hover:text-neon-cyan">Contact</a>
+          <a
+            href="mailto:ihgyugames@gmail.com"
+            class="rounded-full border border-neon-cyan/60 px-4 py-1.5 text-sm font-medium text-neon-cyan transition hover:bg-neon-cyan hover:text-space-950"
+            >Get in touch</a
+          >
+        </div>
+
+        <button
+          id="menu-btn"
+          class="grid h-10 w-10 place-items-center rounded-lg border border-white/15 text-white md:hidden"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          aria-label="Toggle menu"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path class="menu-open-icon" d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+      </nav>
+
+      <div
+        id="mobile-menu"
+        class="hidden border-t border-white/10 bg-space-950/95 px-5 py-4 backdrop-blur md:hidden"
+      >
+        <div class="flex flex-col gap-1">
+          <a href="#games" class="rounded-lg px-3 py-3 text-slate-200 hover:bg-white/5">Games</a>
+          <a href="#about" class="rounded-lg px-3 py-3 text-slate-200 hover:bg-white/5">About</a>
+          <a href="#contact" class="rounded-lg px-3 py-3 text-slate-200 hover:bg-white/5">Contact</a>
+          <a href="mailto:ihgyugames@gmail.com" class="rounded-lg px-3 py-3 font-medium text-neon-cyan hover:bg-white/5">ihgyugames@gmail.com</a>
+        </div>
       </div>
-    </p>
-    <script src="main.js"></script>
+    </header>
+
+    <main id="top" class="relative z-10">
+      <!-- ============ HERO ============ -->
+      <section class="relative flex min-h-[100svh] flex-col justify-center overflow-hidden px-5 sm:px-8">
+        <div id="hero-inner" class="mx-auto w-full max-w-6xl pt-28 pb-20">
+          <p
+            data-hero="eyebrow"
+            class="mb-6 font-pixel text-[0.6rem] leading-relaxed text-neon-cyan sm:text-xs"
+          >
+            ▸ PLAYER&nbsp;1&nbsp;·&nbsp;LUCIANO&nbsp;BERCINI&nbsp;·&nbsp;INDIE&nbsp;GAME&nbsp;DEVELOPER
+          </p>
+
+          <h1
+            class="font-display text-[clamp(3.4rem,11.5vw,9rem)] font-bold uppercase leading-[0.92] tracking-tight"
+          >
+            <span class="block overflow-hidden pb-1"
+              ><span class="hero-line block text-white">Games</span></span
+            >
+            <span class="block overflow-hidden pb-1"
+              ><span class="hero-line text-outline block">Beyond</span></span
+            >
+            <span class="block overflow-hidden pb-2"
+              ><span class="hero-line text-gradient block">Gravity</span></span
+            >
+          </h1>
+
+          <p data-hero="sub" class="mt-8 max-w-xl text-base leading-relaxed text-slate-400 sm:text-lg">
+            Retro-arcade space shooters, hand-crafted by a one-man studio.
+            The <strong class="font-semibold text-slate-200">Arcadium</strong> series is played on
+            iOS, Android and Steam — pixel invaders included.
+          </p>
+
+          <div data-hero="cta" class="mt-10 flex flex-wrap items-center gap-4">
+            <a
+              href="#games"
+              class="rounded-full bg-neon-cyan px-7 py-3.5 font-semibold text-space-950 shadow-[0_0_32px_rgba(62,224,255,0.45)] transition hover:shadow-[0_0_48px_rgba(62,224,255,0.7)] active:scale-95"
+              >Explore the games</a
+            >
+            <a
+              href="#contact"
+              class="rounded-full border border-white/20 px-7 py-3.5 font-medium text-slate-200 transition hover:border-neon-magenta hover:text-neon-magenta active:scale-95"
+              >Get in touch</a
+            >
+          </div>
+        </div>
+
+        <div
+          data-hero="scroll"
+          class="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
+          aria-hidden="true"
+        >
+          <span class="font-pixel text-[0.55rem] tracking-widest text-slate-500">SCROLL</span>
+          <div class="mx-auto mt-2 h-8 w-px animate-pulse bg-gradient-to-b from-neon-cyan to-transparent"></div>
+        </div>
+      </section>
+
+      <!-- ============ MARQUEE ============ -->
+      <div
+        class="relative z-10 overflow-hidden border-y border-white/10 bg-space-900/60 py-3 backdrop-blur"
+        aria-hidden="true"
+      >
+        <div class="marquee-track gap-0 font-pixel text-[0.6rem] text-slate-400">
+          <span class="flex shrink-0 items-center gap-8 pr-8">
+            <span>ARCADIUM: SPACE ODYSSEY</span><span class="text-neon-cyan">✦</span>
+            <span>ARCADIUM: SPACE WAR</span><span class="text-neon-magenta">✦</span>
+            <span>ARCADIUM: SPACE SHOOTER</span><span class="text-neon-violet">✦</span>
+            <span>INSERT COIN</span><span class="text-neon-cyan">✦</span>
+          </span>
+          <span class="flex shrink-0 items-center gap-8 pr-8">
+            <span>ARCADIUM: SPACE ODYSSEY</span><span class="text-neon-cyan">✦</span>
+            <span>ARCADIUM: SPACE WAR</span><span class="text-neon-magenta">✦</span>
+            <span>ARCADIUM: SPACE SHOOTER</span><span class="text-neon-violet">✦</span>
+            <span>INSERT COIN</span><span class="text-neon-cyan">✦</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- ============ GAMES / BENTO ============ -->
+      <section id="games" class="relative z-10 mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
+        <p data-reveal class="font-pixel text-[0.6rem] text-neon-cyan sm:text-xs">▸ SELECT&nbsp;YOUR&nbsp;GAME</p>
+        <h2
+          data-reveal
+          class="mt-4 font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-6xl"
+        >
+          Featured <span class="text-gradient">Games</span>
+        </h2>
+        <p data-reveal class="mt-4 max-w-2xl text-slate-400">
+          Three entries in the Arcadium saga — each one a love letter to the golden age of arcade
+          shoot-'em-ups, rebuilt with modern roguelite depth.
+        </p>
+
+        <div class="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-6 lg:grid-rows-[auto_auto]">
+          <!-- ─── Space Odyssey (feature) ─── -->
+          <article data-reveal class="card lg:col-span-4 lg:row-span-2 flex flex-col">
+            <div class="relative aspect-video overflow-hidden">
+              <img
+                src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2352670/e809313b95d1fa7cb22add87de6a153ad49d4636/ss_e809313b95d1fa7cb22add87de6a153ad49d4636.1920x1080.jpg"
+                alt="Arcadium – Space Odyssey gameplay: a spaceship carving through alien swarms above a procedurally generated planet"
+                class="h-full w-full object-cover"
+                width="1920"
+                height="1080"
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-space-950/90 via-transparent to-transparent"></div>
+              <span
+                class="absolute left-4 top-4 rounded-md border border-neon-cyan/50 bg-space-950/80 px-3 py-1.5 font-pixel text-[0.55rem] text-neon-cyan backdrop-blur"
+                >LATEST&nbsp;RELEASE&nbsp;·&nbsp;2026</span
+              >
+            </div>
+
+            <div class="flex grow flex-col p-6 sm:p-8">
+              <div class="flex items-center gap-4">
+                <img
+                  src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/38/e2/85/38e285db-8fac-ebff-0cb1-c605b880a44c/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+                  alt=""
+                  class="h-14 w-14 rounded-2xl border border-white/10"
+                  width="512"
+                  height="512"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div>
+                  <h3 class="font-display text-2xl font-bold text-white sm:text-3xl">
+                    Arcadium — Space Odyssey
+                  </h3>
+                  <p class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400">
+                    <span class="font-medium text-amber-300">★ 4.6<span class="sr-only"> out of 5 on the App Store</span></span>
+                    <span aria-hidden="true">·</span> Roguelite <span aria-hidden="true">·</span>
+                    Bullet&nbsp;Heaven <span aria-hidden="true">·</span> Procedural&nbsp;Universe
+                  </p>
+                </div>
+              </div>
+
+              <p class="mt-5 leading-relaxed text-slate-400">
+                A bullet-heaven roguelite set in a procedurally generated universe. Land on planets
+                to harvest resources, craft hundreds of game-breaking builds, and unleash them on
+                relentless waves of aliens. Every run unveils a new universe — endless challenges,
+                endless discoveries.
+              </p>
+
+              <div class="mt-auto flex flex-wrap gap-3 pt-6">
+                <a
+                  href="https://store.steampowered.com/app/2352670/Arcadium__Space_Odyssey/"
+                  target="_blank"
+                  rel="noopener"
+                  class="store-pill"
+                  aria-label="Arcadium Space Odyssey on Steam (opens in a new tab)"
+                >
+                  <img src="images/stores/steam.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                  Steam
+                </a>
+                <a
+                  href="https://apps.apple.com/us/app/arcadium-space-odyssey/id6473653646"
+                  target="_blank"
+                  rel="noopener"
+                  class="store-pill"
+                  aria-label="Arcadium Space Odyssey on the App Store (opens in a new tab)"
+                >
+                  <img src="images/stores/app-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                  App&nbsp;Store
+                </a>
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.ihgyug.arcadium3"
+                  target="_blank"
+                  rel="noopener"
+                  class="store-pill"
+                  aria-label="Arcadium Space Odyssey on Google Play (opens in a new tab)"
+                >
+                  <img src="images/stores/play-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                  Google&nbsp;Play
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- ─── Odyssey trailer ─── -->
+          <article data-reveal class="card lg:col-span-2">
+            <div class="aspect-video lg:aspect-auto lg:h-full">
+              <button
+                class="yt-lite h-full"
+                data-yt-id="Hntb-I0gogQ"
+                data-yt-title="Arcadium — Space Odyssey official trailer"
+                aria-label="Play the Arcadium Space Odyssey trailer"
+              >
+                <img
+                  src="https://i.ytimg.com/vi/Hntb-I0gogQ/maxresdefault.jpg"
+                  onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/Hntb-I0gogQ/hqdefault.jpg';"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="play-btn" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="#3ee0ff" aria-hidden="true">
+                    <path d="M8 5.5v13l11-6.5-11-6.5z" />
+                  </svg>
+                </span>
+                <span
+                  class="absolute bottom-3 left-3 rounded-md bg-space-950/80 px-2.5 py-1.5 font-pixel text-[0.5rem] text-slate-300 backdrop-blur"
+                  aria-hidden="true"
+                  >▶ ODYSSEY — OFFICIAL TRAILER</span
+                >
+              </button>
+            </div>
+          </article>
+
+          <!-- ─── Scoreboard ─── -->
+          <article data-reveal class="card lg:col-span-2 p-6 sm:p-7">
+            <p class="font-pixel text-[0.55rem] text-neon-magenta">HI-SCORES</p>
+            <dl class="mt-5 space-y-5">
+              <div class="flex items-baseline justify-between gap-4 border-b border-white/5 pb-4">
+                <dt class="text-sm text-slate-400">Shipped titles</dt>
+                <dd class="font-pixel text-lg text-white">03</dd>
+              </div>
+              <div class="flex items-baseline justify-between gap-4 border-b border-white/5 pb-4">
+                <dt class="text-sm text-slate-400">Avg. App Store rating</dt>
+                <dd class="font-pixel text-lg text-amber-300">4.8<span class="text-xs">★</span></dd>
+              </div>
+              <div class="flex items-baseline justify-between gap-4">
+                <dt class="text-sm text-slate-400">Platforms</dt>
+                <dd class="font-pixel text-lg text-neon-cyan">03</dd>
+              </div>
+            </dl>
+            <p class="mt-5 text-xs text-slate-500">iOS · Android · Steam — one codebase, zero excuses.</p>
+          </article>
+
+          <!-- ─── Space War ─── -->
+          <article data-reveal class="card lg:col-span-3 flex flex-col p-6 sm:p-7">
+            <div class="grid grid-cols-2 gap-3">
+              <img
+                src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/09/12/22/091222cb-4b9e-a8e1-9cc7-f24c859c10b9/d4be3578-f75e-4389-bb56-1798c0c687bf_Screenshot_2020-10-31_19-53-38.png/392x696bb.png"
+                alt="Arcadium – Space War gameplay: a pixel-art spaceship firing at colorful alien invaders"
+                class="aspect-[9/16] w-full rounded-xl border border-white/10 object-cover"
+                width="392"
+                height="696"
+                loading="lazy"
+                decoding="async"
+              />
+              <img
+                src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/d4/32/e0/d432e031-5ed7-587c-8b74-422c56eb6a5d/1fbe3887-ba52-48e8-b6c5-0fecbb7197a3_Screenshot_2020-11-01_15-41-06.png/392x696bb.png"
+                alt="Arcadium – Space War talent selection screen with unique upgrade choices"
+                class="aspect-[9/16] w-full translate-y-3 rounded-xl border border-white/10 object-cover"
+                width="392"
+                height="696"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div class="mt-7 flex items-center gap-4">
+              <img
+                src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/15/bd/ee/15bdeec9-be6b-772d-4c75-50616b880383/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+                alt=""
+                class="h-12 w-12 rounded-xl border border-white/10"
+                width="512"
+                height="512"
+                loading="lazy"
+                decoding="async"
+              />
+              <div>
+                <h3 class="font-display text-xl font-bold text-white">Arcadium — Space War</h3>
+                <p class="mt-0.5 text-xs text-slate-400">
+                  <span class="font-medium text-amber-300">★ 4.8<span class="sr-only"> out of 5 on the App Store</span></span>
+                  <span aria-hidden="true">·</span> Pixel&nbsp;Art <span aria-hidden="true">·</span> Shmup
+                  <span aria-hidden="true">·</span> Boss&nbsp;Fights
+                </p>
+              </div>
+            </div>
+
+            <p class="mt-4 text-sm leading-relaxed text-slate-400">
+              The Arcadium invaders feel as strong and colorful as never before. Pick your
+              spaceship, stack dozens of talents into a unique build, and survive special waves and
+              powerful bosses in this vibrant pixel-art shooter.
+            </p>
+
+            <div class="mt-auto flex flex-wrap items-center gap-3 pt-6">
+              <a
+                href="https://apps.apple.com/us/app/arcadium-space-war/id1553291659"
+                target="_blank"
+                rel="noopener"
+                class="store-pill"
+                aria-label="Arcadium Space War on the App Store (opens in a new tab)"
+              >
+                <img src="images/stores/app-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                App&nbsp;Store
+              </a>
+              <a
+                href="https://play.google.com/store/apps/details?id=com.ihgyug.arcadium2"
+                target="_blank"
+                rel="noopener"
+                class="store-pill"
+                aria-label="Arcadium Space War on Google Play (opens in a new tab)"
+              >
+                <img src="images/stores/play-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                Google&nbsp;Play
+              </a>
+              <a
+                href="https://www.youtube.com/watch?v=2ZKeM1Q5rrE"
+                target="_blank"
+                rel="noopener"
+                class="ml-auto text-xs font-medium text-neon-cyan underline-offset-4 hover:underline"
+                >▶ Watch trailer</a
+              >
+            </div>
+          </article>
+
+          <!-- ─── Space Shooter ─── -->
+          <article data-reveal class="card lg:col-span-3 flex flex-col p-6 sm:p-7">
+            <div class="grid grid-cols-2 gap-3">
+              <img
+                src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/ec/a2/31/eca23176-3193-f0e0-c557-d4dcaa27c9b6/1._Hook_iOS_5.5_U0027_U0027.png/392x696bb.png"
+                alt="Arcadium – Space Shooter gameplay: a fighter ship blasting through waves of alien invaders"
+                class="aspect-[9/16] w-full rounded-xl border border-white/10 object-cover"
+                width="392"
+                height="696"
+                loading="lazy"
+                decoding="async"
+              />
+              <img
+                src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/b8/2e/4e/b82e4e2a-5945-83d7-5de0-6ff9bed751c4/3._Boss_Battles_iOS_5.5_U0027_U0027.png/392x696bb.png"
+                alt="Arcadium – Space Shooter epic boss battle filling the screen with bullets"
+                class="aspect-[9/16] w-full translate-y-3 rounded-xl border border-white/10 object-cover"
+                width="392"
+                height="696"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div class="mt-7 flex items-center gap-4">
+              <img
+                src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/7b/1d/43/7b1d43ca-7ebc-c81f-32aa-3ee3aa862eb6/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+                alt=""
+                class="h-12 w-12 rounded-xl border border-white/10"
+                width="512"
+                height="512"
+                loading="lazy"
+                decoding="async"
+              />
+              <div>
+                <h3 class="font-display text-xl font-bold text-white">Arcadium — Space Shooter</h3>
+                <p class="mt-0.5 text-xs text-slate-400">
+                  <span class="font-medium text-amber-300">★ 4.9<span class="sr-only"> out of 5 on the App Store</span></span>
+                  <span aria-hidden="true">·</span> Retro&nbsp;Arcade <span aria-hidden="true">·</span>
+                  Endless <span aria-hidden="true">·</span> One-Finger&nbsp;Controls
+                </p>
+              </div>
+            </div>
+
+            <p class="mt-4 text-sm leading-relaxed text-slate-400">
+              Commander, Earth is under attack! The original Arcadium: a fast-paced arcade shmup
+              blending retro style with modern action. Dodge bullet storms, collect power-ups, and
+              take down massive bosses in an infinite fight for survival.
+            </p>
+
+            <div class="mt-auto flex flex-wrap items-center gap-3 pt-6">
+              <a
+                href="https://apps.apple.com/us/app/arcadium-space-shooter/id1555937672"
+                target="_blank"
+                rel="noopener"
+                class="store-pill"
+                aria-label="Arcadium Space Shooter on the App Store (opens in a new tab)"
+              >
+                <img src="images/stores/app-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                App&nbsp;Store
+              </a>
+              <a
+                href="https://play.google.com/store/apps/details?id=com.ihgyug.arcadium"
+                target="_blank"
+                rel="noopener"
+                class="store-pill"
+                aria-label="Arcadium Space Shooter on Google Play (opens in a new tab)"
+              >
+                <img src="images/stores/play-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                Google&nbsp;Play
+              </a>
+              <a
+                href="https://www.youtube.com/watch?v=tX_fONFXlS8"
+                target="_blank"
+                rel="noopener"
+                class="ml-auto text-xs font-medium text-neon-cyan underline-offset-4 hover:underline"
+                >▶ Watch trailer</a
+              >
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ ABOUT ============ -->
+      <section id="about" class="relative z-10 border-t border-white/5 bg-space-900/30">
+        <div class="mx-auto grid max-w-6xl gap-12 px-5 py-24 sm:px-8 sm:py-32 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <p data-reveal class="font-pixel text-[0.6rem] text-neon-magenta sm:text-xs">▸ ABOUT&nbsp;ME</p>
+            <h2
+              data-reveal
+              class="mt-4 font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl"
+            >
+              One-man <span class="text-gradient">studio</span>
+            </h2>
+            <div data-reveal class="mt-6 space-y-4 leading-relaxed text-slate-400">
+              <p>
+                Hi, I'm Luciano — a passionate indie game developer and the solo force behind the
+                Arcadium series. From the first line of C# to the store screenshots, every piece of
+                these games passes through my hands.
+              </p>
+              <p>
+                I've been shipping games since 2021, evolving a simple arcade shooter into a
+                full-blown roguelite odyssey across three platforms. I care about tight game feel,
+                readable pixel chaos, and the kind of "one more run" loop that keeps players up too
+                late.
+              </p>
+              <p>
+                Whether you're a fellow developer, a player, or just curious about the magic behind
+                the pixels — welcome aboard.
+              </p>
+            </div>
+
+            <div data-reveal class="mt-8 flex flex-wrap gap-2" aria-label="Tools">
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Unity</span>
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">C#</span>
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Visual Studio</span>
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Git</span>
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Steamworks</span>
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">App Store Connect</span>
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Google Play Console</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-5">
+            <div data-reveal class="card overflow-hidden">
+              <img
+                src="images/background.png"
+                alt="Behind the scenes: Arcadium's C# codebase open in Visual Studio, dozens of gameplay systems in view"
+                class="aspect-video w-full object-cover object-left-top opacity-90"
+                width="1860"
+                height="943"
+                loading="lazy"
+                decoding="async"
+              />
+              <p class="border-t border-white/5 px-5 py-3 font-pixel text-[0.5rem] text-slate-500">
+                BEHIND_THE_SCENES.CS — THE REAL ARCADIUM CODEBASE
+              </p>
+            </div>
+
+            <div data-reveal-group class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div class="card p-5">
+                <h3 class="font-display font-semibold text-white">Engine &amp; Code</h3>
+                <p class="mt-2 text-sm text-slate-400">
+                  Unity + C# — gameplay systems, custom tooling, event-driven architecture and
+                  object pooling for bullet-heaven-scale performance.
+                </p>
+              </div>
+              <div class="card p-5">
+                <h3 class="font-display font-semibold text-white">Game Design</h3>
+                <p class="mt-2 text-sm text-slate-400">
+                  Roguelite builds, talent trees, boss design and difficulty curves tuned for both
+                  quick sessions and hardcore runs.
+                </p>
+              </div>
+              <div class="card p-5">
+                <h3 class="font-display font-semibold text-white">Cross-Platform</h3>
+                <p class="mt-2 text-sm text-slate-400">
+                  One codebase shipped to iOS, Android and Steam — touch, mouse and gamepad friendly.
+                </p>
+              </div>
+              <div class="card p-5">
+                <h3 class="font-display font-semibold text-white">Community</h3>
+                <p class="mt-2 text-sm text-slate-400">
+                  An active Discord where players shape balance patches, test betas and share
+                  high scores.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CONTACT ============ -->
+      <section id="contact" class="relative z-10 border-t border-white/5">
+        <div class="mx-auto max-w-6xl px-5 py-24 text-center sm:px-8 sm:py-32">
+          <p data-reveal class="font-pixel text-[0.6rem] text-neon-cyan sm:text-xs">▸ READY&nbsp;PLAYER&nbsp;2?</p>
+          <h2
+            data-reveal
+            class="mx-auto mt-4 max-w-3xl font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-6xl"
+          >
+            Let's make something <span class="text-gradient">stellar</span>
+          </h2>
+          <p data-reveal class="mx-auto mt-6 max-w-xl text-slate-400">
+            Collaboration, feedback, or just want to talk games? I'm most active on Discord — join
+            the community — or drop me a line and I'll reply as soon as I can.
+          </p>
+
+          <div data-reveal class="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="mailto:ihgyugames@gmail.com"
+              class="rounded-full bg-neon-cyan px-8 py-4 font-semibold text-space-950 shadow-[0_0_32px_rgba(62,224,255,0.45)] transition hover:shadow-[0_0_48px_rgba(62,224,255,0.7)] active:scale-95"
+              >ihgyugames@gmail.com</a
+            >
+          </div>
+
+          <div data-reveal class="mt-10 flex items-center justify-center gap-4">
+            <a
+              href="https://discord.gg/5JwM7DcWPv"
+              target="_blank"
+              rel="noopener"
+              aria-label="Join the Arcadium Space Force Discord (opens in a new tab)"
+              class="grid h-12 w-12 place-items-center rounded-full border border-white/15 text-slate-300 transition hover:border-neon-cyan hover:text-neon-cyan"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.32 4.37a19.8 19.8 0 0 0-4.89-1.52.07.07 0 0 0-.08.04c-.21.37-.44.86-.6 1.25a18.3 18.3 0 0 0-5.5 0 12 12 0 0 0-.61-1.25.08.08 0 0 0-.08-.04 19.7 19.7 0 0 0-4.88 1.52.07.07 0 0 0-.04.03C.53 9.05-.32 13.58.1 18.06c0 .02.01.04.03.05a19.9 19.9 0 0 0 6 3.03.08.08 0 0 0 .08-.03c.46-.63.87-1.3 1.22-2a.08.08 0 0 0-.04-.11 13 13 0 0 1-1.87-.9.08.08 0 0 1-.01-.12l.37-.29a.07.07 0 0 1 .08-.01 14.2 14.2 0 0 0 12.06 0 .07.07 0 0 1 .08 0l.37.3a.08.08 0 0 1 0 .12c-.6.35-1.22.65-1.88.9a.08.08 0 0 0-.04.1c.36.7.77 1.37 1.22 2a.08.08 0 0 0 .08.04 19.8 19.8 0 0 0 6.02-3.03.08.08 0 0 0 .03-.05c.5-5.18-.84-9.67-3.55-13.66a.06.06 0 0 0-.03-.03ZM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.96-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.96 2.42-2.16 2.42Zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Z"/>
+              </svg>
+            </a>
+            <a
+              href="https://twitter.com/ihgyug_games"
+              target="_blank"
+              rel="noopener"
+              aria-label="Luciano on X, formerly Twitter (opens in a new tab)"
+              class="grid h-12 w-12 place-items-center rounded-full border border-white/15 text-slate-300 transition hover:border-neon-cyan hover:text-neon-cyan"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.4l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.3 19.5h2.04L6.49 3.24H4.3L17.6 20.65Z"/>
+              </svg>
+            </a>
+            <a
+              href="https://youtube.com/ihgyug"
+              target="_blank"
+              rel="noopener"
+              aria-label="Luciano on YouTube (opens in a new tab)"
+              class="grid h-12 w-12 place-items-center rounded-full border border-white/15 text-slate-300 transition hover:border-neon-cyan hover:text-neon-cyan"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81ZM9.55 15.57V8.43L15.82 12l-6.27 3.57Z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="relative z-10 border-t border-white/10 bg-space-950/80">
+      <div
+        class="mx-auto flex max-w-6xl flex-col items-center gap-6 px-5 py-10 text-center sm:flex-row sm:justify-between sm:px-8 sm:text-left"
+      >
+        <div>
+          <p class="font-display text-sm font-semibold text-white">Luciano Bercini</p>
+          <p class="mt-1 text-xs text-slate-500">
+            © <span id="year">2026</span> · Handcrafted with vanilla HTML, CSS &amp; JS · No engines were harmed
+          </p>
+        </div>
+        <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-400" aria-label="Store profiles">
+          <a href="https://store.steampowered.com/search/?developer=Luciano%20Bercini" target="_blank" rel="noopener" class="transition-colors hover:text-neon-cyan">Steam profile</a>
+          <a href="https://apps.apple.com/it/developer/luciano-bercini/id1553291661" target="_blank" rel="noopener" class="transition-colors hover:text-neon-cyan">App Store profile</a>
+          <a href="https://play.google.com/store/apps/dev?id=5177674863654001962" target="_blank" rel="noopener" class="transition-colors hover:text-neon-cyan">Google Play profile</a>
+        </nav>
+      </div>
+    </footer>
+
+    <!-- GSAP + ScrollTrigger -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script defer src="app.js"></script>
   </body>
 </html>
