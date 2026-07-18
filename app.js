@@ -168,6 +168,23 @@
     });
   });
 
+  /* ---------- Copy email (mailto fallback) ---------- */
+  const copyBtn = document.getElementById("copy-email");
+  if (copyBtn) {
+    let resetTimer = null;
+    copyBtn.addEventListener("click", async () => {
+      const email = copyBtn.dataset.email;
+      try {
+        await navigator.clipboard.writeText(email);
+        copyBtn.textContent = "Copied ✓";
+      } catch {
+        copyBtn.textContent = email; // clipboard unavailable: show the address itself
+      }
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => (copyBtn.textContent = "Copy email"), 2000);
+    });
+  }
+
   /* ---------- Footer year ---------- */
   const year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear();

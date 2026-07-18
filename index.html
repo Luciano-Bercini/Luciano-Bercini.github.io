@@ -333,7 +333,7 @@
           <a href="#about" class="text-sm text-slate-300 transition-colors hover:text-neon-cyan">About</a>
           <a href="#contact" class="text-sm text-slate-300 transition-colors hover:text-neon-cyan">Contact</a>
           <a
-            href="mailto:ihgyugames@gmail.com"
+            href="#contact"
             class="rounded-full border border-neon-cyan/60 px-4 py-1.5 text-sm font-medium text-neon-cyan transition hover:bg-neon-cyan hover:text-space-950"
             >Get in touch</a
           >
@@ -491,7 +491,12 @@
                     Arcadium — Space Odyssey
                   </h3>
                   <p class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400">
-                    <span class="font-medium text-amber-300">★ 4.6<span class="sr-only"> out of 5 on the App Store</span></span>
+                    <span class="font-medium text-neon-cyan"
+                      >Very&nbsp;Positive<span class="text-slate-500"> on Steam</span
+                      ><span class="sr-only"> — 95% of 115 reviews</span></span
+                    >
+                    <span aria-hidden="true">·</span>
+                    <span class="font-medium text-amber-300">★ 4.6<span class="text-slate-500 font-normal"> App&nbsp;Store</span><span class="sr-only"> rating, out of 5</span></span>
                     <span aria-hidden="true">·</span> Roguelite <span aria-hidden="true">·</span>
                     Bullet&nbsp;Heaven <span aria-hidden="true">·</span> Procedural&nbsp;Universe
                   </p>
@@ -862,6 +867,13 @@
               class="rounded-full bg-neon-cyan px-8 py-4 font-semibold text-space-950 shadow-[0_0_32px_rgba(62,224,255,0.45)] transition hover:shadow-[0_0_48px_rgba(62,224,255,0.7)] active:scale-95"
               >ihgyugames@gmail.com</a
             >
+            <button
+              id="copy-email"
+              data-email="ihgyugames@gmail.com"
+              class="rounded-full border border-white/20 px-6 py-4 font-medium text-slate-200 transition hover:border-neon-cyan hover:text-neon-cyan active:scale-95"
+            >
+              Copy email
+            </button>
           </div>
 
           <div data-reveal class="mt-10 flex items-center justify-center gap-4">
