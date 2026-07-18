@@ -1,4 +1,4 @@
-/* Arcadium portfolio — starfield, nav, lite video embeds, GSAP scroll animations. */
+/* Arcadium portfolio: starfield, nav, lite video embeds, GSAP scroll animations. */
 (() => {
   "use strict";
 
