@@ -308,8 +308,8 @@
         delay: 0.15,
       })
       .from(
-        '[data-hero="pill"], [data-hero="eyebrow"]',
-        { autoAlpha: 0, y: 16, duration: 0.7, stagger: 0.1 },
+        '[data-hero="eyebrow"]',
+        { autoAlpha: 0, y: 16, duration: 0.7 },
         "-=0.8"
       )
       .from('[data-hero="role"]', { autoAlpha: 0, y: 24, duration: 0.7 }, "-=0.5")
