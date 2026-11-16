@@ -169,6 +169,23 @@
         color: #3ee0ff;
       }
 
+      /* ---------- Ticker ----------
+         Scrolls by exactly one group width per loop, so the wrap is seamless.
+         app.js sets the distance and duration from the measured group width. */
+      .marquee-track {
+        display: flex;
+        width: max-content;
+        will-change: transform;
+      }
+      .marquee-track.is-running {
+        animation: marquee var(--marquee-duration, 30s) linear infinite;
+      }
+      @keyframes marquee {
+        to {
+          transform: translate3d(calc(-1 * var(--marquee-distance, 50%)), 0, 0);
+        }
+      }
+
       /* ---------- Bento cards (accent color is per card) ---------- */
       .card {
         --accent: 62, 224, 255;
@@ -362,7 +379,8 @@
         html {
           scroll-behavior: auto;
         }
-        .horror-flicker {
+        .horror-flicker,
+        .marquee-track.is-running {
           animation: none;
         }
         .card,
@@ -552,8 +570,25 @@
         </div>
       </section>
 
+      <!-- ============ TICKER ============ -->
+      <!-- One group of items; app.js clones it until the strip is wider than the screen. -->
+      <div
+        class="relative z-10 overflow-hidden border-y border-white/10 bg-space-900/60 py-3 backdrop-blur"
+        aria-hidden="true"
+      >
+        <div class="marquee-track font-pixel text-[0.6rem] text-slate-400">
+          <span class="marquee-group flex shrink-0 items-center gap-8 pr-8">
+            <span class="text-grazed">GRAZED: OUT NOW</span><span class="text-neon-cyan">✦</span>
+            <span>ARCADIUM SERIES</span><span class="text-neon-magenta">✦</span>
+            <span class="text-dread">HORROR PROJECT: IN DEVELOPMENT</span><span class="text-neon-violet">✦</span>
+            <span>SOLO DEV</span><span class="text-neon-cyan">✦</span>
+            <span>MADE IN ITALY</span><span class="text-neon-magenta">✦</span>
+          </span>
+        </div>
+      </div>
+
       <!-- ============ GAMES ============ -->
-      <section id="games" class="relative z-10 mx-auto max-w-6xl px-5 pt-8 pb-24 sm:px-8 sm:pt-12 sm:pb-32">
+      <section id="games" class="relative z-10 mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
         <h2
           data-reveal
           class="font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-6xl"

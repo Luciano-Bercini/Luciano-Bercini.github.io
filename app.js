@@ -145,6 +145,50 @@
     });
   }
 
+  /* ---------- Ticker: fill the screen and loop seamlessly ---------- */
+  const marqueeTrack = document.querySelector(".marquee-track");
+  const marqueeGroup = marqueeTrack && marqueeTrack.querySelector(".marquee-group");
+  if (marqueeTrack && marqueeGroup) {
+    const SPEED = 50; // pixels per second, the same at every screen width
+    let builtForWidth = 0;
+
+    const buildMarquee = () => {
+      const viewport = window.innerWidth;
+      if (viewport === builtForWidth) return; // mobile URL bars change height, not width
+      builtForWidth = viewport;
+
+      marqueeTrack.querySelectorAll(".marquee-group[data-clone]").forEach((n) => n.remove());
+      const groupWidth = marqueeGroup.getBoundingClientRect().width;
+      if (!groupWidth) return;
+
+      // After shifting left by one group, the remaining copies must still cover the screen.
+      const copies = Math.ceil(viewport / groupWidth) + 1;
+      for (let i = 0; i < copies; i++) {
+        const clone = marqueeGroup.cloneNode(true);
+        clone.dataset.clone = "";
+        marqueeTrack.append(clone);
+      }
+
+      marqueeTrack.style.setProperty("--marquee-distance", groupWidth + "px");
+      marqueeTrack.style.setProperty("--marquee-duration", groupWidth / SPEED + "s");
+      if (!reducedMotion) {
+        marqueeTrack.classList.remove("is-running");
+        void marqueeTrack.offsetWidth; // restart the animation with the new distance
+        marqueeTrack.classList.add("is-running");
+      }
+    };
+
+    // The pixel font changes the group width, so measure after it has loaded.
+    const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    fontsReady.then(buildMarquee);
+
+    let resizeTimer = null;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(buildMarquee, 150);
+    });
+  }
+
   /* ---------- Hero: rotating genre word ---------- */
   const rotator = document.getElementById("rotator");
   if (rotator && !reducedMotion) {
