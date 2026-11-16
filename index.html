@@ -6,28 +6,41 @@
     <title>Luciano Bercini: Indie Game Developer</title>
     <meta
       name="description"
-      content="Portfolio of Luciano Bercini, indie game developer behind the Arcadium series of retro-arcade space shooters on Steam, the App Store and Google Play."
+      content="Luciano Bercini is a full-time indie game developer from Italy, creator of Grazed and the Arcadium series. Play his games on Steam, iOS and Android."
     />
     <meta property="og:title" content="Luciano Bercini: Indie Game Developer" />
     <meta
       property="og:description"
-      content="Retro-arcade space shooters, hand-crafted by a one-man studio. Play the Arcadium series on Steam, iOS and Android."
+      content="Full-time solo developer from Italy. Creator of Grazed and the Arcadium series, on Steam, iOS and Android."
     />
-    <meta
-      property="og:image"
-      content="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2352670/32764cb8d5112fb366cc49e7ff2823899a509e2c/header.jpg"
-    />
+    <meta property="og:image" content="https://luciano-bercini.github.io/images/grazed/keyart.jpg" />
+    <meta property="og:url" content="https://luciano-bercini.github.io/" />
     <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👾</text></svg>"
     />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Luciano Bercini",
+        "jobTitle": "Indie Game Developer",
+        "url": "https://luciano-bercini.github.io/",
+        "address": { "@type": "PostalAddress", "addressCountry": "IT" },
+        "sameAs": [
+          "https://x.com/lucianobercini",
+          "https://youtube.com/ihgyug",
+          "https://store.steampowered.com/curator/45108115"
+        ]
+      }
+    </script>
 
     <!-- Asset hosts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://is1-ssl.mzstatic.com" />
-    <link rel="preconnect" href="https://shared.fastly.steamstatic.com" />
     <link rel="preconnect" href="https://i.ytimg.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap"
@@ -43,6 +56,8 @@
             colors: {
               space: { 950: "#05060f", 900: "#0a0d1e", 800: "#12152e" },
               neon: { cyan: "#3ee0ff", magenta: "#ff4ecd", violet: "#8b5cf6" },
+              grazed: "#3dff6e",
+              dread: "#ff3b3b",
             },
             fontFamily: {
               display: ['"Space Grotesk"', "ui-sans-serif", "system-ui", "sans-serif"],
@@ -126,29 +141,38 @@
           transparent 1px 3px
         );
       }
+      #scroll-progress {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 70;
+        height: 2px;
+        width: 100%;
+        transform: scaleX(0);
+        transform-origin: left;
+        background: linear-gradient(90deg, #3ee0ff, #8b5cf6, #ff4ecd);
+        pointer-events: none;
+      }
 
       /* ---------- Typography effects ---------- */
-      .text-outline {
-        color: transparent;
-        -webkit-text-stroke: 2px rgba(226, 232, 240, 0.85);
-      }
-      @media (max-width: 640px) {
-        .text-outline {
-          -webkit-text-stroke-width: 1.2px;
-        }
-      }
       .text-gradient {
         background: linear-gradient(92deg, #3ee0ff 5%, #8b5cf6 55%, #ff4ecd 100%);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
       }
+      #rotator {
+        display: inline-block;
+      }
+      .nav-link.is-active {
+        color: #3ee0ff;
+      }
 
       /* ---------- Marquee ---------- */
       .marquee-track {
         display: flex;
         width: max-content;
-        animation: marquee 32s linear infinite;
+        animation: marquee 36s linear infinite;
       }
       @keyframes marquee {
         to {
@@ -156,8 +180,9 @@
         }
       }
 
-      /* ---------- Bento cards ---------- */
+      /* ---------- Bento cards (accent color is per card) ---------- */
       .card {
+        --accent: 62, 224, 255;
         position: relative;
         overflow: hidden;
         border-radius: 1.5rem;
@@ -174,15 +199,15 @@
         transition: opacity 0.4s ease;
         background: radial-gradient(
           540px circle at var(--mx, 50%) var(--my, 50%),
-          rgba(62, 224, 255, 0.1),
+          rgba(var(--accent), 0.1),
           transparent 55%
         );
         pointer-events: none;
       }
       @media (hover: hover) {
         .card:hover {
-          border-color: rgba(62, 224, 255, 0.4);
-          box-shadow: 0 0 42px rgba(62, 224, 255, 0.12), 0 24px 48px -24px rgba(0, 0, 0, 0.8);
+          border-color: rgba(var(--accent), 0.4);
+          box-shadow: 0 0 42px rgba(var(--accent), 0.12), 0 24px 48px -24px rgba(0, 0, 0, 0.8);
           transform: translateY(-4px);
         }
         .card:hover::before {
@@ -192,6 +217,13 @@
       .card > * {
         position: relative;
         z-index: 1;
+      }
+      /* While GSAP is revealing an element, CSS transitions must not fight its tween. */
+      .is-revealing {
+        transition: none !important;
+      }
+      .accent-text {
+        color: rgb(var(--accent));
       }
 
       /* ---------- Store pills ---------- */
@@ -206,13 +238,25 @@
         font-size: 0.82rem;
         font-weight: 500;
         color: #e2e8f0;
-        transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+        transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease,
+          box-shadow 0.25s ease;
+      }
+      .store-pill--primary {
+        border-color: rgb(var(--accent));
+        background: rgb(var(--accent));
+        color: #05060f;
+        font-weight: 700;
+        box-shadow: 0 0 28px rgba(var(--accent), 0.35);
       }
       @media (hover: hover) {
         .store-pill:hover {
-          border-color: rgba(62, 224, 255, 0.65);
-          background: rgba(62, 224, 255, 0.1);
+          border-color: rgba(var(--accent, 62, 224, 255), 0.65);
+          background: rgba(var(--accent, 62, 224, 255), 0.1);
           transform: translateY(-2px);
+        }
+        .store-pill--primary:hover {
+          background: rgb(var(--accent));
+          box-shadow: 0 0 44px rgba(var(--accent), 0.6);
         }
       }
       .store-pill:active {
@@ -225,7 +269,6 @@
         display: block;
         width: 100%;
         height: 100%;
-        min-height: 200px;
         cursor: pointer;
         border: 0;
         padding: 0;
@@ -257,9 +300,10 @@
         width: 4.25rem;
         height: 4.25rem;
         border-radius: 9999px;
+        color: rgb(var(--accent, 62, 224, 255));
         background: rgba(5, 6, 15, 0.72);
-        border: 1px solid rgba(62, 224, 255, 0.55);
-        box-shadow: 0 0 30px rgba(62, 224, 255, 0.35);
+        border: 1px solid rgba(var(--accent, 62, 224, 255), 0.55);
+        box-shadow: 0 0 30px rgba(var(--accent, 62, 224, 255), 0.35);
         transition: transform 0.25s ease;
       }
       @media (hover: hover) {
@@ -275,16 +319,67 @@
         border: 0;
       }
 
+      /* ---------- Screenshot tiles ---------- */
+      .shot img {
+        transition: transform 0.6s ease;
+      }
+      @media (hover: hover) {
+        .shot:hover img {
+          transform: scale(1.05);
+        }
+      }
+
+      /* ---------- Horror teaser ---------- */
+      .horror-card {
+        background: radial-gradient(ellipse at 88% 50%, rgba(255, 59, 59, 0.14), transparent 60%),
+          linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+      }
+      .horror-flicker {
+        color: #ff3b3b;
+        text-shadow: 0 0 26px rgba(255, 59, 59, 0.65);
+        animation: flicker 6s infinite;
+      }
+      @keyframes flicker {
+        0%,
+        44%,
+        50%,
+        56%,
+        89%,
+        93%,
+        100% {
+          opacity: 1;
+        }
+        47% {
+          opacity: 0.3;
+        }
+        53% {
+          opacity: 0.65;
+        }
+        91% {
+          opacity: 0.4;
+        }
+      }
+      .no-signal {
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.06) 0 2px,
+            transparent 2px 5px
+          ),
+          radial-gradient(circle at 50% 45%, rgba(255, 59, 59, 0.22), rgba(5, 6, 15, 0.95) 72%);
+      }
+
       /* ---------- Motion safety ---------- */
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-behavior: auto;
         }
-        .marquee-track {
+        .marquee-track,
+        .horror-flicker {
           animation: none;
         }
         .card,
         .store-pill,
+        .shot img,
         .yt-lite img,
         .yt-lite .play-btn {
           transition: none;
@@ -301,6 +396,7 @@
     >
 
     <!-- Atmosphere -->
+    <div id="scroll-progress" aria-hidden="true"></div>
     <canvas id="starfield" aria-hidden="true"></canvas>
     <div class="nebula nebula-a" data-depth="0.25" aria-hidden="true"></div>
     <div class="nebula nebula-b" data-depth="0.45" aria-hidden="true"></div>
@@ -309,10 +405,7 @@
     <div class="scanlines" aria-hidden="true"></div>
 
     <!-- ============ NAV ============ -->
-    <header
-      id="site-header"
-      class="fixed inset-x-0 top-0 z-50 transition-colors duration-300"
-    >
+    <header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-colors duration-300">
       <nav
         class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8"
         aria-label="Main navigation"
@@ -329,9 +422,9 @@
         </a>
 
         <div class="hidden items-center gap-8 md:flex">
-          <a href="#games" class="text-sm text-slate-300 transition-colors hover:text-neon-cyan">Games</a>
-          <a href="#about" class="text-sm text-slate-300 transition-colors hover:text-neon-cyan">About</a>
-          <a href="#contact" class="text-sm text-slate-300 transition-colors hover:text-neon-cyan">Contact</a>
+          <a href="#games" data-nav="games" class="nav-link text-sm text-slate-300 transition-colors hover:text-neon-cyan">Games</a>
+          <a href="#about" data-nav="about" class="nav-link text-sm text-slate-300 transition-colors hover:text-neon-cyan">About</a>
+          <a href="#contact" data-nav="contact" class="nav-link text-sm text-slate-300 transition-colors hover:text-neon-cyan">Contact</a>
           <a
             href="#contact"
             class="rounded-full border border-neon-cyan/60 px-4 py-1.5 text-sm font-medium text-neon-cyan transition hover:bg-neon-cyan hover:text-space-950"
@@ -347,7 +440,7 @@
           aria-label="Toggle menu"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <path class="menu-open-icon" d="M4 7h16M4 12h16M4 17h16" />
+            <path d="M4 7h16M4 12h16M4 17h16" />
           </svg>
         </button>
       </nav>
@@ -368,46 +461,97 @@
     <main id="top" class="relative z-10">
       <!-- ============ HERO ============ -->
       <section class="relative flex min-h-[100svh] flex-col justify-center overflow-hidden px-5 sm:px-8">
-        <div id="hero-inner" class="mx-auto w-full max-w-6xl pt-28 pb-20">
-          <p
-            data-hero="eyebrow"
-            class="mb-6 font-pixel text-[0.6rem] leading-relaxed text-neon-cyan sm:text-xs"
-          >
-            ▸ PLAYER&nbsp;1&nbsp;·&nbsp;LUCIANO&nbsp;BERCINI&nbsp;·&nbsp;INDIE&nbsp;GAME&nbsp;DEVELOPER
-          </p>
+        <div
+          id="hero-inner"
+          class="mx-auto grid w-full max-w-6xl items-center gap-12 pt-28 pb-24 lg:grid-cols-12"
+        >
+          <div class="min-w-0 lg:col-span-7">
+            <div data-hero="pill" class="mb-8">
+              <a
+                href="https://store.steampowered.com/app/5058280/Grazed__Incremental_Arcade/"
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center gap-3 rounded-full border border-grazed/40 bg-grazed/10 py-1.5 pl-2 pr-4 text-sm text-slate-100 transition-colors hover:border-grazed hover:bg-grazed/20"
+              >
+                <span class="rounded-full bg-grazed px-2 py-1 font-pixel text-[0.5rem] text-space-950">NEW</span>
+                Grazed is out now on Steam
+                <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
 
-          <h1
-            class="font-display text-[clamp(3.4rem,11.5vw,9rem)] font-bold uppercase leading-[0.92] tracking-tight"
-          >
-            <span class="block overflow-hidden pb-1"
-              ><span class="hero-line block text-white">Games</span></span
+            <p
+              data-hero="eyebrow"
+              class="mb-5 font-pixel text-[0.6rem] leading-relaxed text-neon-cyan sm:text-xs"
             >
-            <span class="block overflow-hidden pb-1"
-              ><span class="hero-line text-outline block">Beyond</span></span
-            >
-            <span class="block overflow-hidden pb-2"
-              ><span class="hero-line text-gradient block">Gravity</span></span
-            >
-          </h1>
+              ▸ <span class="hidden sm:inline">PLAYER&nbsp;1&nbsp;· </span>INDIE&nbsp;GAME&nbsp;DEVELOPER&nbsp;· ITALY
+            </p>
 
-          <p data-hero="sub" class="mt-8 max-w-xl text-base leading-relaxed text-slate-400 sm:text-lg">
-            Retro-arcade space shooters, hand-crafted by a one-man studio.
-            The <strong class="font-semibold text-slate-200">Arcadium</strong> series is played on
-            iOS, Android and Steam, pixel invaders included.
-          </p>
+            <h1
+              class="font-display text-[clamp(3.6rem,15vw,7.5rem)] font-bold uppercase leading-[0.92] tracking-tight lg:text-[clamp(5rem,8.6vw,7.75rem)]"
+            >
+              <span class="block overflow-hidden pb-1"
+                ><span class="hero-line block text-white">Luciano</span></span
+              >
+              <span class="block overflow-hidden pb-2"
+                ><span class="hero-line text-gradient block">Bercini</span></span
+              >
+            </h1>
 
-          <div data-hero="cta" class="mt-10 flex flex-wrap items-center gap-4">
-            <a
-              href="#games"
-              class="rounded-full bg-neon-cyan px-7 py-3.5 font-semibold text-space-950 shadow-[0_0_32px_rgba(62,224,255,0.45)] transition hover:shadow-[0_0_48px_rgba(62,224,255,0.7)] active:scale-95"
-              >Explore the games</a
+            <p
+              data-hero="role"
+              class="mt-6 font-display text-2xl font-medium text-slate-100 sm:text-3xl"
             >
-            <a
-              href="#contact"
-              class="rounded-full border border-white/20 px-7 py-3.5 font-medium text-slate-200 transition hover:border-neon-magenta hover:text-neon-magenta active:scale-95"
-              >Get in touch</a
-            >
+              I make
+              <span id="rotator" class="text-gradient font-bold" data-words="arcade|roguelite|incremental|horror"
+                >arcade, roguelite and horror</span
+              >
+              games.
+            </p>
+
+            <p data-hero="sub" class="mt-5 max-w-xl text-base leading-relaxed text-slate-400 sm:text-lg">
+              Full-time solo developer from Italy. I design, code and ship every game myself, for
+              Steam, iOS and Android.
+            </p>
+
+            <div data-hero="cta" class="mt-9 flex flex-wrap items-center gap-4">
+              <a
+                href="#games"
+                class="rounded-full bg-neon-cyan px-7 py-3.5 font-semibold text-space-950 shadow-[0_0_32px_rgba(62,224,255,0.45)] transition hover:shadow-[0_0_48px_rgba(62,224,255,0.7)] active:scale-95"
+                >Explore the games</a
+              >
+              <a
+                href="#about"
+                class="rounded-full border border-white/20 px-7 py-3.5 font-medium text-slate-200 transition hover:border-neon-magenta hover:text-neon-magenta active:scale-95"
+                >About me</a
+              >
+            </div>
           </div>
+
+          <!-- Featured game spotlight (desktop) -->
+          <a
+            data-hero="spotlight"
+            href="#grazed"
+            class="group relative hidden lg:col-span-5 lg:block"
+            aria-label="Featured game: Grazed, out now on Steam"
+          >
+            <div
+              id="spotlight-card"
+              class="rotate-3 overflow-hidden rounded-2xl border border-grazed/40 shadow-[0_0_70px_rgba(61,255,110,0.22)] transition duration-500 group-hover:rotate-1 group-hover:shadow-[0_0_90px_rgba(61,255,110,0.38)]"
+            >
+              <img
+                src="images/grazed/keyart.jpg"
+                alt=""
+                width="900"
+                height="506"
+                class="w-full"
+                fetchpriority="high"
+              />
+              <div class="flex items-center justify-between gap-3 bg-space-950/95 px-4 py-3">
+                <span class="font-pixel text-[0.55rem] text-grazed">OUT NOW ON STEAM</span>
+                <span class="text-sm text-slate-300">Grazed <span aria-hidden="true">&rarr;</span></span>
+              </div>
+            </div>
+          </a>
         </div>
 
         <div
@@ -427,21 +571,25 @@
       >
         <div class="marquee-track gap-0 font-pixel text-[0.6rem] text-slate-400">
           <span class="flex shrink-0 items-center gap-8 pr-8">
-            <span>ARCADIUM: SPACE ODYSSEY</span><span class="text-neon-cyan">✦</span>
-            <span>ARCADIUM: SPACE WAR</span><span class="text-neon-magenta">✦</span>
-            <span>ARCADIUM: SPACE SHOOTER</span><span class="text-neon-violet">✦</span>
-            <span>INSERT COIN</span><span class="text-neon-cyan">✦</span>
+            <span class="text-grazed">GRAZED: OUT NOW</span><span class="text-neon-cyan">✦</span>
+            <span>ARCADIUM SERIES</span><span class="text-neon-magenta">✦</span>
+            <span class="text-dread">HORROR PROJECT: IN DEVELOPMENT</span><span class="text-neon-violet">✦</span>
+            <span>SOLO DEV</span><span class="text-neon-cyan">✦</span>
+            <span>MADE IN ITALY</span><span class="text-neon-magenta">✦</span>
+            <span>INSERT COIN</span><span class="text-neon-violet">✦</span>
           </span>
           <span class="flex shrink-0 items-center gap-8 pr-8">
-            <span>ARCADIUM: SPACE ODYSSEY</span><span class="text-neon-cyan">✦</span>
-            <span>ARCADIUM: SPACE WAR</span><span class="text-neon-magenta">✦</span>
-            <span>ARCADIUM: SPACE SHOOTER</span><span class="text-neon-violet">✦</span>
-            <span>INSERT COIN</span><span class="text-neon-cyan">✦</span>
+            <span class="text-grazed">GRAZED: OUT NOW</span><span class="text-neon-cyan">✦</span>
+            <span>ARCADIUM SERIES</span><span class="text-neon-magenta">✦</span>
+            <span class="text-dread">HORROR PROJECT: IN DEVELOPMENT</span><span class="text-neon-violet">✦</span>
+            <span>SOLO DEV</span><span class="text-neon-cyan">✦</span>
+            <span>MADE IN ITALY</span><span class="text-neon-magenta">✦</span>
+            <span>INSERT COIN</span><span class="text-neon-violet">✦</span>
           </span>
         </div>
       </div>
 
-      <!-- ============ GAMES / BENTO ============ -->
+      <!-- ============ GAMES ============ -->
       <section id="games" class="relative z-10 mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
         <p data-reveal class="font-pixel text-[0.6rem] text-neon-cyan sm:text-xs">▸ SELECT&nbsp;YOUR&nbsp;GAME</p>
         <h2
@@ -451,31 +599,193 @@
           Featured <span class="text-gradient">Games</span>
         </h2>
         <p data-reveal class="mt-4 max-w-2xl text-slate-400">
-          Three entries in the Arcadium saga, each one a love letter to the golden age of arcade
-          shoot-'em-ups, rebuilt with modern roguelite depth.
+          Fast, replayable and built solo. From neon score-chasers to deep-space roguelites, with
+          something darker on the way.
         </p>
 
-        <div class="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-6 lg:grid-rows-[auto_auto]">
-          <!-- ─── Space Odyssey (feature) ─── -->
-          <article data-reveal class="card lg:col-span-4 lg:row-span-2 flex flex-col">
-            <div class="relative aspect-video overflow-hidden">
+        <!-- ===== Grazed (latest release) ===== -->
+        <div id="grazed" class="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-6 lg:grid-rows-3">
+          <article
+            data-reveal
+            class="card flex flex-col lg:col-span-4 lg:row-span-3"
+            style="--accent: 61, 255, 110"
+          >
+            <div class="relative aspect-[16/10] overflow-hidden sm:aspect-[2/1] lg:aspect-[16/7]">
               <img
-                src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2352670/e809313b95d1fa7cb22add87de6a153ad49d4636/ss_e809313b95d1fa7cb22add87de6a153ad49d4636.1920x1080.jpg"
-                alt="Arcadium - Space Odyssey gameplay: a spaceship carving through alien swarms above a procedurally generated planet"
+                src="images/grazed/hero.jpg"
+                alt="Grazed key art: a black square character with glowing green eyes swinging twin green blades at geometric enemies"
                 class="h-full w-full object-cover"
-                width="1920"
-                height="1080"
+                width="2400"
+                height="751"
                 loading="lazy"
                 decoding="async"
               />
-              <div class="absolute inset-0 bg-gradient-to-t from-space-950/90 via-transparent to-transparent"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-space-950 via-space-950/10 to-space-950/40"></div>
+              <img
+                src="images/grazed/logo.png"
+                alt=""
+                class="absolute left-1/2 top-[5%] w-[62%] -translate-x-1/2 drop-shadow-[0_6px_24px_rgba(0,0,0,0.9)] sm:w-[54%]"
+                width="900"
+                height="338"
+                loading="lazy"
+                decoding="async"
+              />
               <span
-                class="absolute left-4 top-4 rounded-md border border-neon-cyan/50 bg-space-950/80 px-3 py-1.5 font-pixel text-[0.55rem] text-neon-cyan backdrop-blur"
-                >LATEST&nbsp;RELEASE&nbsp;·&nbsp;2026</span
+                class="absolute bottom-4 left-4 rounded-md border border-grazed/50 bg-space-950/85 px-3 py-1.5 font-pixel text-[0.55rem] text-grazed backdrop-blur"
+                >NEW&nbsp;RELEASE&nbsp;·&nbsp;NOV&nbsp;2026</span
               >
             </div>
 
             <div class="flex grow flex-col p-6 sm:p-8">
+              <h3 class="font-display text-2xl font-bold text-white sm:text-3xl">
+                Grazed - Incremental Arcade
+              </h3>
+              <p class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400">
+                <span class="font-medium text-grazed">Out now on Steam</span>
+                <span aria-hidden="true">·</span> Incremental <span aria-hidden="true">·</span>
+                Arcade <span aria-hidden="true">·</span> Score&nbsp;Attack
+                <span aria-hidden="true">·</span> PC
+              </p>
+
+              <p class="mt-5 font-display text-xl font-medium text-white">
+                The closer you get, the stronger you get.
+              </p>
+              <p class="mt-3 leading-relaxed text-slate-400">
+                A skill-based incremental arcade game where every kill means brushing past death.
+                Graze enemies with your blades, push your combo high enough to ignite absurd powers,
+                and chase the highest score. Runs last seconds to minutes, and every one earns
+                upgrades, so you always come back deadlier.
+              </p>
+
+              <ul class="mt-5 flex flex-wrap gap-2 text-xs text-slate-300" aria-label="Highlights">
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1">Twin blades</li>
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1">Hyper Mode</li>
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1">Supernova</li>
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1">Sprawling upgrade tree</li>
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1">Unlockable Glyphs</li>
+              </ul>
+
+              <div class="mt-auto flex flex-wrap gap-3 pt-7">
+                <a
+                  href="https://store.steampowered.com/app/5058280/Grazed__Incremental_Arcade/"
+                  target="_blank"
+                  rel="noopener"
+                  class="store-pill store-pill--primary"
+                  aria-label="Get Grazed on Steam (opens in a new tab)"
+                >
+                  <img src="images/stores/steam.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                  Get it on Steam
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Grazed trailer -->
+          <article data-reveal class="card lg:col-span-2" style="--accent: 61, 255, 110">
+            <div class="aspect-video lg:aspect-auto lg:h-full">
+              <button
+                class="yt-lite h-full"
+                data-yt-id="gntqz3YzLZU"
+                data-yt-title="Grazed - Incremental Arcade release trailer"
+                aria-label="Play the Grazed release trailer"
+              >
+                <img src="images/grazed/shot-5.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async" />
+                <span class="play-btn" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M8 5.5v13l11-6.5-11-6.5z" />
+                  </svg>
+                </span>
+                <span
+                  class="absolute bottom-3 left-3 rounded-md bg-space-950/85 px-2.5 py-1.5 font-pixel text-[0.5rem] text-slate-200 backdrop-blur"
+                  aria-hidden="true"
+                  >▶ RELEASE TRAILER</span
+                >
+              </button>
+            </div>
+          </article>
+
+          <!-- Grazed screenshots -->
+          <figure data-reveal class="card shot lg:col-span-2" style="--accent: 61, 255, 110">
+            <div class="aspect-video overflow-hidden lg:aspect-auto lg:h-full">
+              <img
+                src="images/grazed/shot-8.jpg"
+                alt="Grazed in Supernova mode: a 620 kill combo with lightning striking across a blue and orange arena"
+                class="h-full w-full object-cover"
+                width="1280"
+                height="720"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption
+              class="absolute bottom-3 left-3 rounded-md bg-space-950/85 px-2.5 py-1.5 font-pixel text-[0.5rem] text-slate-200 backdrop-blur"
+            >
+              SUPERNOVA
+            </figcaption>
+          </figure>
+
+          <figure data-reveal class="card shot lg:col-span-2" style="--accent: 61, 255, 110">
+            <div class="aspect-video overflow-hidden lg:aspect-auto lg:h-full">
+              <img
+                src="images/grazed/shot-2.jpg"
+                alt="Grazed game over screen showing the upgrade tree where shards are spent on new powers"
+                class="h-full w-full object-cover"
+                width="1280"
+                height="720"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption
+              class="absolute bottom-3 left-3 rounded-md bg-space-950/85 px-2.5 py-1.5 font-pixel text-[0.5rem] text-slate-200 backdrop-blur"
+            >
+              UPGRADE TREE
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- ===== Arcadium series ===== -->
+        <div data-reveal class="mt-20">
+          <p class="font-pixel text-[0.6rem] text-neon-violet sm:text-xs">▸ THE&nbsp;ARCADIUM&nbsp;SERIES</p>
+          <h3 class="mt-3 font-display text-2xl font-bold text-white sm:text-3xl">
+            Three trips to deep space
+          </h3>
+          <p class="mt-2 max-w-2xl text-sm text-slate-400">
+            A mobile arcade shooter that kept growing until it became a full roguelite on Steam.
+          </p>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-6">
+          <!-- Space Odyssey -->
+          <article data-reveal class="card grid lg:col-span-6 lg:grid-cols-2">
+            <div class="aspect-video lg:aspect-auto">
+              <button
+                class="yt-lite h-full"
+                data-yt-id="_jeYYtX-CJQ"
+                data-yt-title="Arcadium - Space Odyssey official trailer"
+                aria-label="Play the Arcadium Space Odyssey trailer"
+              >
+                <img
+                  src="https://i.ytimg.com/vi/_jeYYtX-CJQ/maxresdefault.jpg"
+                  onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/_jeYYtX-CJQ/hqdefault.jpg';"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="play-btn" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M8 5.5v13l11-6.5-11-6.5z" />
+                  </svg>
+                </span>
+                <span
+                  class="absolute bottom-3 left-3 rounded-md bg-space-950/85 px-2.5 py-1.5 font-pixel text-[0.5rem] text-slate-200 backdrop-blur"
+                  aria-hidden="true"
+                  >▶ OFFICIAL TRAILER</span
+                >
+              </button>
+            </div>
+
+            <div class="flex flex-col p-6 sm:p-8">
               <div class="flex items-center gap-4">
                 <img
                   src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/38/e2/85/38e285db-8fac-ebff-0cb1-c605b880a44c/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
@@ -487,27 +797,31 @@
                   decoding="async"
                 />
                 <div>
-                  <h3 class="font-display text-2xl font-bold text-white sm:text-3xl">
+                  <h4 class="font-display text-xl font-bold text-white sm:text-2xl">
                     Arcadium - Space Odyssey
-                  </h3>
+                  </h4>
                   <p class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400">
                     <span class="font-medium text-neon-cyan"
-                      >Very&nbsp;Positive<span class="text-slate-500"> on Steam</span
-                      ><span class="sr-only">, 95% of 115 reviews</span></span
+                      >Very&nbsp;Positive<span class="font-normal text-slate-400"> on Steam</span></span
                     >
                     <span aria-hidden="true">·</span>
-                    <span class="font-medium text-amber-300">★ 4.6<span class="text-slate-500 font-normal"> App&nbsp;Store</span><span class="sr-only"> rating, out of 5</span></span>
-                    <span aria-hidden="true">·</span> Roguelite <span aria-hidden="true">·</span>
-                    Bullet&nbsp;Heaven <span aria-hidden="true">·</span> Procedural&nbsp;Universe
+                    <span class="font-medium text-amber-300"
+                      >★ 4.7<span class="font-normal text-slate-400"> App&nbsp;Store</span
+                      ><span class="sr-only"> rating, out of 5</span></span
+                    >
                   </p>
                 </div>
               </div>
 
-              <p class="mt-5 leading-relaxed text-slate-400">
+              <p class="mt-5 text-sm leading-relaxed text-slate-400">
                 A bullet-heaven roguelite set in a procedurally generated universe. Land on planets
                 to harvest resources, craft hundreds of game-breaking builds, and unleash them on
-                relentless waves of aliens. Every run unveils a new universe: endless challenges,
-                endless discoveries.
+                relentless waves of aliens. Every run unveils a new universe.
+              </p>
+              <p class="mt-3 text-xs text-slate-400">
+                Roguelite <span aria-hidden="true">·</span> Bullet&nbsp;Heaven
+                <span aria-hidden="true">·</span> Procedural&nbsp;Universe
+                <span aria-hidden="true">·</span> 2026
               </p>
 
               <div class="mt-auto flex flex-wrap gap-3 pt-6">
@@ -545,63 +859,13 @@
             </div>
           </article>
 
-          <!-- ─── Odyssey trailer ─── -->
-          <article data-reveal class="card lg:col-span-2">
-            <div class="aspect-video lg:aspect-auto lg:h-full">
-              <button
-                class="yt-lite h-full"
-                data-yt-id="_jeYYtX-CJQ"
-                data-yt-title="Arcadium - Space Odyssey official trailer"
-                aria-label="Play the Arcadium Space Odyssey trailer"
-              >
-                <img
-                  src="https://i.ytimg.com/vi/_jeYYtX-CJQ/maxresdefault.jpg"
-                  onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/_jeYYtX-CJQ/hqdefault.jpg';"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
-                <span class="play-btn" aria-hidden="true">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="#3ee0ff" aria-hidden="true">
-                    <path d="M8 5.5v13l11-6.5-11-6.5z" />
-                  </svg>
-                </span>
-                <span
-                  class="absolute bottom-3 left-3 rounded-md bg-space-950/80 px-2.5 py-1.5 font-pixel text-[0.5rem] text-slate-300 backdrop-blur"
-                  aria-hidden="true"
-                  >▶ ODYSSEY: OFFICIAL TRAILER</span
-                >
-              </button>
-            </div>
-          </article>
-
-          <!-- ─── Scoreboard ─── -->
-          <article data-reveal class="card lg:col-span-2 p-6 sm:p-7">
-            <p class="font-pixel text-[0.55rem] text-neon-magenta">HI-SCORES</p>
-            <dl class="mt-5 space-y-5">
-              <div class="flex items-baseline justify-between gap-4 border-b border-white/5 pb-4">
-                <dt class="text-sm text-slate-400">Shipped titles</dt>
-                <dd class="font-pixel text-lg text-white">03</dd>
-              </div>
-              <div class="flex items-baseline justify-between gap-4 border-b border-white/5 pb-4">
-                <dt class="text-sm text-slate-400">Avg. App Store rating</dt>
-                <dd class="font-pixel text-lg text-amber-300">4.8<span class="text-xs">★</span></dd>
-              </div>
-              <div class="flex items-baseline justify-between gap-4">
-                <dt class="text-sm text-slate-400">Platforms</dt>
-                <dd class="font-pixel text-lg text-neon-cyan">03</dd>
-              </div>
-            </dl>
-            <p class="mt-5 text-xs text-slate-500">iOS · Android · Steam. One codebase, zero excuses.</p>
-          </article>
-
-          <!-- ─── Space War ─── -->
-          <article data-reveal class="card lg:col-span-3 flex flex-col p-6 sm:p-7">
-            <div class="grid grid-cols-2 gap-3">
+          <!-- Space War -->
+          <article data-reveal class="card flex flex-col gap-6 p-6 sm:flex-row sm:p-7 lg:col-span-3">
+            <div class="flex shrink-0 gap-3 sm:w-44">
               <img
                 src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/09/12/22/091222cb-4b9e-a8e1-9cc7-f24c859c10b9/d4be3578-f75e-4389-bb56-1798c0c687bf_Screenshot_2020-10-31_19-53-38.png/392x696bb.png"
                 alt="Arcadium - Space War gameplay: a pixel-art spaceship firing at colorful alien invaders"
-                class="aspect-[9/16] w-full rounded-xl border border-white/10 object-cover"
+                class="aspect-[9/16] w-1/2 self-start rounded-xl border border-white/10 object-cover"
                 width="392"
                 height="696"
                 loading="lazy"
@@ -610,7 +874,7 @@
               <img
                 src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource124/v4/d4/32/e0/d432e031-5ed7-587c-8b74-422c56eb6a5d/1fbe3887-ba52-48e8-b6c5-0fecbb7197a3_Screenshot_2020-11-01_15-41-06.png/392x696bb.png"
                 alt="Arcadium - Space War talent selection screen with unique upgrade choices"
-                class="aspect-[9/16] w-full translate-y-3 rounded-xl border border-white/10 object-cover"
+                class="aspect-[9/16] w-1/2 translate-y-3 self-start rounded-xl border border-white/10 object-cover"
                 width="392"
                 height="696"
                 loading="lazy"
@@ -618,70 +882,72 @@
               />
             </div>
 
-            <div class="mt-7 flex items-center gap-4">
-              <img
-                src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/15/bd/ee/15bdeec9-be6b-772d-4c75-50616b880383/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
-                alt=""
-                class="h-12 w-12 rounded-xl border border-white/10"
-                width="512"
-                height="512"
-                loading="lazy"
-                decoding="async"
-              />
-              <div>
-                <h3 class="font-display text-xl font-bold text-white">Arcadium - Space War</h3>
-                <p class="mt-0.5 text-xs text-slate-400">
-                  <span class="font-medium text-amber-300">★ 4.8<span class="sr-only"> out of 5 on the App Store</span></span>
-                  <span aria-hidden="true">·</span> Pixel&nbsp;Art <span aria-hidden="true">·</span> Shmup
-                  <span aria-hidden="true">·</span> Boss&nbsp;Fights
-                </p>
+            <div class="flex min-w-0 grow flex-col">
+              <div class="flex items-center gap-3">
+                <img
+                  src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/15/bd/ee/15bdeec9-be6b-772d-4c75-50616b880383/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+                  alt=""
+                  class="h-11 w-11 rounded-xl border border-white/10"
+                  width="512"
+                  height="512"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div>
+                  <h4 class="font-display text-lg font-bold leading-tight text-white">Arcadium - Space War</h4>
+                  <p class="mt-0.5 text-xs text-slate-400">
+                    <span class="font-medium text-amber-300">★ 4.8<span class="sr-only"> out of 5 on the App Store</span></span>
+                    <span aria-hidden="true">·</span> Pixel&nbsp;Art&nbsp;Shmup
+                    <span aria-hidden="true">·</span> 2021
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <p class="mt-4 text-sm leading-relaxed text-slate-400">
-              The Arcadium invaders feel as strong and colorful as never before. Pick your
-              spaceship, stack dozens of talents into a unique build, and survive special waves and
-              powerful bosses in this vibrant pixel-art shooter.
-            </p>
+              <p class="mt-4 text-sm leading-relaxed text-slate-400">
+                Pick your spaceship, stack dozens of talents into a unique build, and survive
+                special waves and powerful bosses in a vibrant pixel-art shooter.
+              </p>
 
-            <div class="mt-auto flex flex-wrap items-center gap-3 pt-6">
-              <a
-                href="https://apps.apple.com/us/app/arcadium-space-war/id1553291659"
-                target="_blank"
-                rel="noopener"
-                class="store-pill"
-                aria-label="Arcadium Space War on the App Store (opens in a new tab)"
-              >
-                <img src="images/stores/app-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
-                App&nbsp;Store
-              </a>
-              <a
-                href="https://play.google.com/store/apps/details?id=com.ihgyug.arcadium2"
-                target="_blank"
-                rel="noopener"
-                class="store-pill"
-                aria-label="Arcadium Space War on Google Play (opens in a new tab)"
-              >
-                <img src="images/stores/play-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
-                Google&nbsp;Play
-              </a>
+              <div class="mt-auto flex flex-wrap items-center gap-3 pt-5">
+                <a
+                  href="https://apps.apple.com/us/app/arcadium-space-war/id1553291659"
+                  target="_blank"
+                  rel="noopener"
+                  class="store-pill"
+                  aria-label="Arcadium Space War on the App Store (opens in a new tab)"
+                >
+                  <img src="images/stores/app-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                  App&nbsp;Store
+                </a>
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.ihgyug.arcadium2"
+                  target="_blank"
+                  rel="noopener"
+                  class="store-pill"
+                  aria-label="Arcadium Space War on Google Play (opens in a new tab)"
+                >
+                  <img src="images/stores/play-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                  Google&nbsp;Play
+                </a>
+              </div>
               <a
                 href="https://www.youtube.com/watch?v=2ZKeM1Q5rrE"
                 target="_blank"
                 rel="noopener"
-                class="ml-auto text-xs font-medium text-neon-cyan underline-offset-4 hover:underline"
+                class="mt-4 inline-block py-1 text-xs font-medium text-neon-cyan underline-offset-4 hover:underline"
+                aria-label="Watch the Arcadium Space War trailer on YouTube (opens in a new tab)"
                 >▶ Watch trailer</a
               >
             </div>
           </article>
 
-          <!-- ─── Space Shooter ─── -->
-          <article data-reveal class="card lg:col-span-3 flex flex-col p-6 sm:p-7">
-            <div class="grid grid-cols-2 gap-3">
+          <!-- Space Shooter -->
+          <article data-reveal class="card flex flex-col gap-6 p-6 sm:flex-row sm:p-7 lg:col-span-3">
+            <div class="flex shrink-0 gap-3 sm:w-44">
               <img
                 src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/ec/a2/31/eca23176-3193-f0e0-c557-d4dcaa27c9b6/1._Hook_iOS_5.5_U0027_U0027.png/392x696bb.png"
                 alt="Arcadium - Space Shooter gameplay: a fighter ship blasting through waves of alien invaders"
-                class="aspect-[9/16] w-full rounded-xl border border-white/10 object-cover"
+                class="aspect-[9/16] w-1/2 self-start rounded-xl border border-white/10 object-cover"
                 width="392"
                 height="696"
                 loading="lazy"
@@ -689,8 +955,8 @@
               />
               <img
                 src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/b8/2e/4e/b82e4e2a-5945-83d7-5de0-6ff9bed751c4/3._Boss_Battles_iOS_5.5_U0027_U0027.png/392x696bb.png"
-                alt="Arcadium - Space Shooter epic boss battle filling the screen with bullets"
-                class="aspect-[9/16] w-full translate-y-3 rounded-xl border border-white/10 object-cover"
+                alt="Arcadium - Space Shooter boss battle filling the screen with bullets"
+                class="aspect-[9/16] w-1/2 translate-y-3 self-start rounded-xl border border-white/10 object-cover"
                 width="392"
                 height="696"
                 loading="lazy"
@@ -698,134 +964,263 @@
               />
             </div>
 
-            <div class="mt-7 flex items-center gap-4">
-              <img
-                src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/7b/1d/43/7b1d43ca-7ebc-c81f-32aa-3ee3aa862eb6/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
-                alt=""
-                class="h-12 w-12 rounded-xl border border-white/10"
-                width="512"
-                height="512"
-                loading="lazy"
-                decoding="async"
-              />
-              <div>
-                <h3 class="font-display text-xl font-bold text-white">Arcadium - Space Shooter</h3>
-                <p class="mt-0.5 text-xs text-slate-400">
-                  <span class="font-medium text-amber-300">★ 4.9<span class="sr-only"> out of 5 on the App Store</span></span>
-                  <span aria-hidden="true">·</span> Retro&nbsp;Arcade <span aria-hidden="true">·</span>
-                  Endless <span aria-hidden="true">·</span> One-Finger&nbsp;Controls
-                </p>
+            <div class="flex min-w-0 grow flex-col">
+              <div class="flex items-center gap-3">
+                <img
+                  src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/7b/1d/43/7b1d43ca-7ebc-c81f-32aa-3ee3aa862eb6/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg"
+                  alt=""
+                  class="h-11 w-11 rounded-xl border border-white/10"
+                  width="512"
+                  height="512"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div>
+                  <h4 class="font-display text-lg font-bold leading-tight text-white">Arcadium - Space Shooter</h4>
+                  <p class="mt-0.5 text-xs text-slate-400">
+                    <span class="font-medium text-amber-300">★ 4.9<span class="sr-only"> out of 5 on the App Store</span></span>
+                    <span aria-hidden="true">·</span> Retro&nbsp;Arcade
+                    <span aria-hidden="true">·</span> 2021
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <p class="mt-4 text-sm leading-relaxed text-slate-400">
-              Commander, Earth is under attack! The original Arcadium: a fast-paced arcade shmup
-              blending retro style with modern action. Dodge bullet storms, collect power-ups, and
-              take down massive bosses in an infinite fight for survival.
-            </p>
+              <p class="mt-4 text-sm leading-relaxed text-slate-400">
+                Where it all started: a fast one-finger arcade shmup. Dodge bullet storms, collect
+                power-ups and take down massive bosses in an endless fight for survival.
+              </p>
 
-            <div class="mt-auto flex flex-wrap items-center gap-3 pt-6">
-              <a
-                href="https://apps.apple.com/us/app/arcadium-space-shooter/id1555937672"
-                target="_blank"
-                rel="noopener"
-                class="store-pill"
-                aria-label="Arcadium Space Shooter on the App Store (opens in a new tab)"
-              >
-                <img src="images/stores/app-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
-                App&nbsp;Store
-              </a>
-              <a
-                href="https://play.google.com/store/apps/details?id=com.ihgyug.arcadium"
-                target="_blank"
-                rel="noopener"
-                class="store-pill"
-                aria-label="Arcadium Space Shooter on Google Play (opens in a new tab)"
-              >
-                <img src="images/stores/play-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
-                Google&nbsp;Play
-              </a>
+              <div class="mt-auto flex flex-wrap items-center gap-3 pt-5">
+                <a
+                  href="https://apps.apple.com/us/app/arcadium-space-shooter/id1555937672"
+                  target="_blank"
+                  rel="noopener"
+                  class="store-pill"
+                  aria-label="Arcadium Space Shooter on the App Store (opens in a new tab)"
+                >
+                  <img src="images/stores/app-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                  App&nbsp;Store
+                </a>
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.ihgyug.arcadium"
+                  target="_blank"
+                  rel="noopener"
+                  class="store-pill"
+                  aria-label="Arcadium Space Shooter on Google Play (opens in a new tab)"
+                >
+                  <img src="images/stores/play-store.png" alt="" width="20" height="20" class="h-5 w-5" loading="lazy" />
+                  Google&nbsp;Play
+                </a>
+              </div>
               <a
                 href="https://www.youtube.com/watch?v=tX_fONFXlS8"
                 target="_blank"
                 rel="noopener"
-                class="ml-auto text-xs font-medium text-neon-cyan underline-offset-4 hover:underline"
+                class="mt-4 inline-block py-1 text-xs font-medium text-neon-cyan underline-offset-4 hover:underline"
+                aria-label="Watch the Arcadium Space Shooter trailer on YouTube (opens in a new tab)"
                 >▶ Watch trailer</a
               >
             </div>
           </article>
         </div>
+
+        <!-- ===== Horror project (in development) ===== -->
+        <article
+          data-reveal
+          class="card horror-card mt-20"
+          style="--accent: 255, 59, 59"
+        >
+          <div class="grid items-center gap-8 p-7 sm:p-10 lg:grid-cols-[1fr_18rem]">
+            <div>
+              <p class="font-pixel text-[0.6rem] text-dread sm:text-xs">▸ IN&nbsp;DEVELOPMENT</p>
+              <h3 class="mt-4 font-display text-3xl font-bold uppercase tracking-tight text-white sm:text-4xl">
+                Something <span class="horror-flicker">darker</span> is coming
+              </h3>
+              <p class="mt-4 max-w-xl leading-relaxed text-slate-400">
+                Not everything I make glows in neon. My next project is a horror game, currently in
+                early development. No title and no trailer yet, only a bad feeling.
+              </p>
+              <div class="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="https://x.com/lucianobercini"
+                  target="_blank"
+                  rel="noopener"
+                  class="store-pill"
+                  aria-label="Follow development on X (opens in a new tab)"
+                  >Follow on X</a
+                >
+                <a
+                  href="https://discord.gg/5JwM7DcWPv"
+                  target="_blank"
+                  rel="noopener"
+                  class="store-pill"
+                  aria-label="Join the Discord (opens in a new tab)"
+                  >Join the Discord</a
+                >
+              </div>
+            </div>
+            <div
+              class="no-signal grid aspect-video place-items-center rounded-xl border border-dread/25"
+              aria-hidden="true"
+            >
+              <span class="horror-flicker font-pixel text-[0.6rem]">NO SIGNAL</span>
+            </div>
+          </div>
+        </article>
       </section>
 
       <!-- ============ ABOUT ============ -->
       <section id="about" class="relative z-10 border-t border-white/5 bg-space-900/30">
-        <div class="mx-auto grid max-w-6xl gap-12 px-5 py-24 sm:px-8 sm:py-32 lg:grid-cols-2 lg:gap-16">
-          <div>
-            <p data-reveal class="font-pixel text-[0.6rem] text-neon-magenta sm:text-xs">▸ ABOUT&nbsp;ME</p>
-            <h2
-              data-reveal
-              class="mt-4 font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl"
-            >
-              One-man <span class="text-gradient">studio</span>
-            </h2>
-            <div data-reveal class="mt-6 space-y-4 leading-relaxed text-slate-400">
-              <p>
-                Hi, I'm Luciano, a passionate indie game developer and the solo force behind the
-                Arcadium series. From the first line of C# to the store screenshots, every piece of
-                these games passes through my hands.
-              </p>
-              <p>
-                I've been shipping games since 2021, evolving a simple arcade shooter into a
-                full-blown roguelite odyssey across three platforms. I care about tight game feel,
-                readable pixel chaos, and the kind of "one more run" loop that keeps players up too
-                late.
-              </p>
-              <p>
-                Whether you're a fellow developer, a player, or just curious about the magic behind
-                the pixels: welcome aboard.
-              </p>
+        <div class="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
+          <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
+            <div>
+              <p data-reveal class="font-pixel text-[0.6rem] text-neon-magenta sm:text-xs">▸ ABOUT&nbsp;ME</p>
+              <h2
+                data-reveal
+                class="mt-4 font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl"
+              >
+                One dev, <span class="text-gradient">many worlds</span>
+              </h2>
+              <div data-reveal class="mt-6 space-y-4 leading-relaxed text-slate-400">
+                <p>
+                  Hi, I'm Luciano, a full-time indie game developer from Italy. I hold a master's
+                  degree in Computer Science, and I put it to work making games on my own: design,
+                  code, balancing and release all pass through my hands.
+                </p>
+                <p>
+                  I started in 2021 with the Arcadium series, which grew from a mobile arcade
+                  shooter into a full roguelite on Steam. In November 2026 I released
+                  <a href="#grazed" class="font-medium text-slate-200 underline decoration-grazed/60 underline-offset-4 hover:text-grazed">Grazed</a>,
+                  a skill-based incremental arcade game about getting dangerously close to
+                  everything that can kill you.
+                </p>
+                <p>
+                  I care about tight game feel, readable chaos and the kind of "one more run" loop
+                  that keeps you up too late. Lately I've been exploring very different territory
+                  with a horror game.
+                </p>
+              </div>
+
+              <ul data-reveal class="mt-8 flex flex-wrap gap-2" aria-label="Tools">
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Unity</li>
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">C#</li>
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Git</li>
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Steamworks</li>
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">App Store Connect</li>
+                <li class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Google Play Console</li>
+              </ul>
             </div>
 
-            <div data-reveal class="mt-8 flex flex-wrap gap-2" aria-label="Tools">
-              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Unity</span>
-              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">C#</span>
-              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Visual Studio</span>
-              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Git</span>
-              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Steamworks</span>
-              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">App Store Connect</span>
-              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Google Play Console</span>
+            <div class="flex flex-col gap-5">
+              <!-- Player profile -->
+              <div data-reveal class="card p-6 sm:p-7">
+                <p class="font-pixel text-[0.55rem] text-neon-magenta">PLAYER&nbsp;PROFILE</p>
+                <dl class="mt-5 space-y-3 text-sm">
+                  <div class="flex justify-between gap-6 border-b border-white/5 pb-3">
+                    <dt class="text-slate-400">Class</dt>
+                    <dd class="text-right font-medium text-white">Solo indie developer, full time</dd>
+                  </div>
+                  <div class="flex justify-between gap-6 border-b border-white/5 pb-3">
+                    <dt class="text-slate-400">Origin</dt>
+                    <dd class="text-right font-medium text-white">Italy</dd>
+                  </div>
+                  <div class="flex justify-between gap-6 border-b border-white/5 pb-3">
+                    <dt class="text-slate-400">Education</dt>
+                    <dd class="text-right font-medium text-white">MSc in Computer Science</dd>
+                  </div>
+                  <div class="flex justify-between gap-6 border-b border-white/5 pb-3">
+                    <dt class="text-slate-400">Engine</dt>
+                    <dd class="text-right font-medium text-white">Unity, C#</dd>
+                  </div>
+                  <div class="flex justify-between gap-6">
+                    <dt class="text-slate-400">Current quest</dt>
+                    <dd class="text-right font-medium text-dread">A horror game</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <!-- Timeline -->
+              <div data-reveal class="card p-6 sm:p-7">
+                <p class="font-pixel text-[0.55rem] text-neon-cyan">SAVE&nbsp;FILE</p>
+                <ol class="mt-5 space-y-4 border-l border-white/10 pl-5 text-sm">
+                  <li class="relative">
+                    <span class="absolute -left-[1.6rem] top-1.5 h-2 w-2 rounded-full bg-neon-violet" aria-hidden="true"></span>
+                    <span class="font-pixel text-[0.5rem] text-slate-400">2021</span>
+                    <p class="mt-1 text-slate-300">Arcadium - Space War and Space Shooter launch on iOS and Android.</p>
+                  </li>
+                  <li class="relative">
+                    <span class="absolute -left-[1.6rem] top-1.5 h-2 w-2 rounded-full bg-neon-cyan" aria-hidden="true"></span>
+                    <span class="font-pixel text-[0.5rem] text-slate-400">JAN 2026</span>
+                    <p class="mt-1 text-slate-300">Arcadium - Space Odyssey releases on Steam, then on mobile.</p>
+                  </li>
+                  <li class="relative">
+                    <span class="absolute -left-[1.6rem] top-1.5 h-2 w-2 rounded-full bg-grazed" aria-hidden="true"></span>
+                    <span class="font-pixel text-[0.5rem] text-slate-400">OCT 2026</span>
+                    <p class="mt-1 text-slate-300">The Grazed demo joins Steam Next Fest.</p>
+                  </li>
+                  <li class="relative">
+                    <span class="absolute -left-[1.6rem] top-1.5 h-2 w-2 rounded-full bg-grazed shadow-[0_0_10px_#3dff6e]" aria-hidden="true"></span>
+                    <span class="font-pixel text-[0.5rem] text-grazed">NOV 2026</span>
+                    <p class="mt-1 text-slate-300">Grazed releases on Steam.</p>
+                  </li>
+                  <li class="relative">
+                    <span class="absolute -left-[1.6rem] top-1.5 h-2 w-2 rounded-full bg-dread" aria-hidden="true"></span>
+                    <span class="font-pixel text-[0.5rem] text-dread">NEXT</span>
+                    <p class="mt-1 text-slate-300">A horror game, in early development.</p>
+                  </li>
+                </ol>
+              </div>
             </div>
           </div>
 
-          <div class="flex flex-col gap-5">
-            <div data-reveal-group class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <div class="card p-5">
-                <h3 class="font-display font-semibold text-white">Engine &amp; Code</h3>
-                <p class="mt-2 text-sm text-slate-400">
-                  Unity + C#: gameplay systems, custom tooling, event-driven architecture and
-                  object pooling for bullet-heaven-scale performance.
-                </p>
-              </div>
-              <div class="card p-5">
-                <h3 class="font-display font-semibold text-white">Game Design</h3>
-                <p class="mt-2 text-sm text-slate-400">
-                  Roguelite builds, talent trees, boss design and difficulty curves tuned for both
-                  quick sessions and hardcore runs.
-                </p>
-              </div>
-              <div class="card p-5">
-                <h3 class="font-display font-semibold text-white">Cross-Platform</h3>
-                <p class="mt-2 text-sm text-slate-400">
-                  One codebase shipped to iOS, Android and Steam; touch, mouse and gamepad friendly.
-                </p>
-              </div>
-              <div class="card p-5">
-                <h3 class="font-display font-semibold text-white">Community</h3>
-                <p class="mt-2 text-sm text-slate-400">
-                  An active Discord where players shape balance patches, test betas and share
-                  high scores.
-                </p>
-              </div>
+          <!-- Hi-scores -->
+          <ul data-reveal-group class="mt-14 grid grid-cols-2 gap-5 lg:grid-cols-4" aria-label="Hi-scores">
+            <li class="card p-5 text-center sm:p-6">
+              <p class="font-pixel text-xl text-white sm:text-2xl">04</p>
+              <p class="mt-3 text-xs text-slate-400">Games shipped</p>
+            </li>
+            <li class="card p-5 text-center sm:p-6">
+              <p class="font-pixel text-xl text-neon-cyan sm:text-2xl">03</p>
+              <p class="mt-3 text-xs text-slate-400">Platforms: PC, iOS, Android</p>
+            </li>
+            <li class="card p-5 text-center sm:p-6">
+              <p class="font-pixel text-xl text-amber-300 sm:text-2xl">4.8<span class="text-sm">★</span></p>
+              <p class="mt-3 text-xs text-slate-400">Average App Store rating</p>
+            </li>
+            <li class="card p-5 text-center sm:p-6">
+              <p class="font-pixel text-xl text-neon-magenta sm:text-2xl">2021</p>
+              <p class="mt-3 text-xs text-slate-400">Shipping games since</p>
+            </li>
+          </ul>
+
+          <!-- Skills -->
+          <div data-reveal-group class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="card p-5">
+              <h3 class="font-display font-semibold text-white">Engine &amp; Code</h3>
+              <p class="mt-2 text-sm text-slate-400">
+                Unity and C#. Gameplay systems, custom tooling and optimization for screens full of
+                enemies and effects.
+              </p>
+            </div>
+            <div class="card p-5">
+              <h3 class="font-display font-semibold text-white">Game Design</h3>
+              <p class="mt-2 text-sm text-slate-400">
+                Score-chasing arcade loops, roguelite builds, upgrade trees and difficulty curves
+                tuned for quick sessions and long runs alike.
+              </p>
+            </div>
+            <div class="card p-5">
+              <h3 class="font-display font-semibold text-white">Cross-Platform</h3>
+              <p class="mt-2 text-sm text-slate-400">
+                Games released on Steam, iOS and Android, from touch controls to mouse and keyboard.
+              </p>
+            </div>
+            <div class="card p-5">
+              <h3 class="font-display font-semibold text-white">Community</h3>
+              <p class="mt-2 text-sm text-slate-400">
+                An active Discord where players share scores, test new builds and help shape balance
+                updates.
+              </p>
             </div>
           </div>
         </div>
@@ -842,8 +1237,8 @@
             Let's make something <span class="text-gradient">stellar</span>
           </h2>
           <p data-reveal class="mx-auto mt-6 max-w-xl text-slate-400">
-            Collaboration, feedback, or just want to talk games? I'm most active on Discord, so
-            make sure to join the community, or drop me a line and I'll reply as soon as I can.
+            Press, collaboration, feedback, or just want to talk games? I'm most active on Discord,
+            so make sure to join the community, or drop me a line and I'll reply as soon as I can.
           </p>
 
           <div data-reveal class="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -866,7 +1261,7 @@
               href="https://discord.gg/5JwM7DcWPv"
               target="_blank"
               rel="noopener"
-              aria-label="Join the Arcadium Space Force Discord (opens in a new tab)"
+              aria-label="Join the community Discord (opens in a new tab)"
               class="grid h-12 w-12 place-items-center rounded-full border border-white/15 text-slate-300 transition hover:border-neon-cyan hover:text-neon-cyan"
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -907,14 +1302,14 @@
       >
         <div>
           <p class="font-display text-sm font-semibold text-white">Luciano Bercini</p>
-          <p class="mt-1 text-xs text-slate-500">
+          <p class="mt-1 text-xs text-slate-400">
             © <span id="year">2026</span>
           </p>
         </div>
         <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-400" aria-label="Store profiles">
-          <a href="https://store.steampowered.com/curator/45108115" target="_blank" rel="noopener" class="transition-colors hover:text-neon-cyan">Steam profile</a>
-          <a href="https://apps.apple.com/it/developer/luciano-bercini/id1553291661" target="_blank" rel="noopener" class="transition-colors hover:text-neon-cyan">App Store profile</a>
-          <a href="https://play.google.com/store/apps/dev?id=5177674863654001962" target="_blank" rel="noopener" class="transition-colors hover:text-neon-cyan">Google Play profile</a>
+          <a href="https://store.steampowered.com/curator/45108115" target="_blank" rel="noopener" class="py-2 transition-colors hover:text-neon-cyan">Steam profile</a>
+          <a href="https://apps.apple.com/it/developer/luciano-bercini/id1553291661" target="_blank" rel="noopener" class="py-2 transition-colors hover:text-neon-cyan">App Store profile</a>
+          <a href="https://play.google.com/store/apps/dev?id=5177674863654001962" target="_blank" rel="noopener" class="py-2 transition-colors hover:text-neon-cyan">Google Play profile</a>
         </nav>
       </div>
     </footer>

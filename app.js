@@ -109,14 +109,70 @@
 
   /* ---------- Header: solid background after scrolling ---------- */
   const header = document.getElementById("site-header");
+  const progress = document.getElementById("scroll-progress");
   function onScrollHeader() {
-    header.classList.toggle("bg-space-950/85", window.scrollY > 24);
-    header.classList.toggle("backdrop-blur-md", window.scrollY > 24);
-    header.classList.toggle("border-b", window.scrollY > 24);
-    header.classList.toggle("border-white/10", window.scrollY > 24);
+    const scrolled = window.scrollY > 24;
+    header.classList.toggle("bg-space-950/85", scrolled);
+    header.classList.toggle("backdrop-blur-md", scrolled);
+    header.classList.toggle("border-b", scrolled);
+    header.classList.toggle("border-white/10", scrolled);
+    if (progress) {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.transform = "scaleX(" + (max > 0 ? Math.min(window.scrollY / max, 1) : 0) + ")";
+    }
   }
   onScrollHeader();
   window.addEventListener("scroll", onScrollHeader, { passive: true });
+  window.addEventListener("resize", onScrollHeader);
+
+  /* ---------- Nav: highlight the section in view ---------- */
+  const navLinks = document.querySelectorAll(".nav-link[data-nav]");
+  if (navLinks.length && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          navLinks.forEach((link) =>
+            link.classList.toggle("is-active", link.dataset.nav === entry.target.id)
+          );
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    navLinks.forEach((link) => {
+      const section = document.getElementById(link.dataset.nav);
+      if (section) observer.observe(section);
+    });
+  }
+
+  /* ---------- Hero: rotating genre word ---------- */
+  const rotator = document.getElementById("rotator");
+  if (rotator && !reducedMotion) {
+    const words = (rotator.dataset.words || "").split("|").filter(Boolean);
+    if (words.length > 1) {
+      // Screen readers keep the full static sentence; the animated word is decorative.
+      const srText = document.createElement("span");
+      srText.className = "sr-only";
+      srText.textContent = rotator.textContent.trim();
+      rotator.after(srText);
+      rotator.setAttribute("aria-hidden", "true");
+      rotator.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+
+      let index = 0;
+      rotator.textContent = words[0];
+      setInterval(() => {
+        if (document.hidden) return;
+        rotator.style.opacity = "0";
+        rotator.style.transform = "translateY(0.35em)";
+        setTimeout(() => {
+          index = (index + 1) % words.length;
+          rotator.textContent = words[index];
+          rotator.style.opacity = "1";
+          rotator.style.transform = "none";
+        }, 300);
+      }, 2200);
+    }
+  }
 
   /* ---------- Mobile menu ---------- */
   const menuBtn = document.getElementById("menu-btn");
@@ -208,13 +264,29 @@
         delay: 0.15,
       })
       .from(
-        '[data-hero="eyebrow"]',
-        { autoAlpha: 0, y: 16, duration: 0.7 },
-        "-=0.7"
+        '[data-hero="pill"], [data-hero="eyebrow"]',
+        { autoAlpha: 0, y: 16, duration: 0.7, stagger: 0.1 },
+        "-=0.8"
       )
+      .from('[data-hero="role"]', { autoAlpha: 0, y: 24, duration: 0.7 }, "-=0.5")
       .from('[data-hero="sub"]', { autoAlpha: 0, y: 24, duration: 0.7 }, "-=0.5")
       .from('[data-hero="cta"]', { autoAlpha: 0, y: 24, duration: 0.7 }, "-=0.5")
+      .from(
+        '[data-hero="spotlight"]',
+        { autoAlpha: 0, x: 60, rotate: 8, duration: 1.1 },
+        "-=1.4"
+      )
       .from('[data-hero="scroll"]', { autoAlpha: 0, duration: 0.9 }, "-=0.3");
+
+    // The featured-game card floats gently once it has landed.
+    gsap.to('[data-hero="spotlight"]', {
+      y: -12,
+      duration: 3.2,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+      delay: 1.6,
+    });
 
     if (typeof window.ScrollTrigger === "undefined") return;
 
@@ -241,25 +313,34 @@
     });
 
     // Section reveals.
+    // Elements pause their own CSS transitions while revealing, and the inline
+    // transform is cleared afterwards so hover effects keep working.
     gsap.utils.toArray("[data-reveal]").forEach((el) => {
+      el.classList.add("is-revealing");
       gsap.from(el, {
         autoAlpha: 0,
         y: 44,
         duration: 0.9,
         ease: "power3.out",
+        clearProps: "transform",
         scrollTrigger: { trigger: el, start: "top 87%" },
+        onComplete: () => el.classList.remove("is-revealing"),
       });
     });
 
     // Grouped reveals stagger their children.
     gsap.utils.toArray("[data-reveal-group]").forEach((group) => {
-      gsap.from(group.children, {
+      const items = Array.from(group.children);
+      items.forEach((item) => item.classList.add("is-revealing"));
+      gsap.from(items, {
         autoAlpha: 0,
         y: 36,
         duration: 0.8,
         stagger: 0.12,
         ease: "power3.out",
+        clearProps: "transform",
         scrollTrigger: { trigger: group, start: "top 85%" },
+        onComplete: () => items.forEach((item) => item.classList.remove("is-revealing")),
       });
     });
   }
