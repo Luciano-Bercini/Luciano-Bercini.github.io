@@ -169,18 +169,6 @@
         color: #3ee0ff;
       }
 
-      /* ---------- Marquee ---------- */
-      .marquee-track {
-        display: flex;
-        width: max-content;
-        animation: marquee 36s linear infinite;
-      }
-      @keyframes marquee {
-        to {
-          transform: translateX(-50%);
-        }
-      }
-
       /* ---------- Bento cards (accent color is per card) ---------- */
       .card {
         --accent: 62, 224, 255;
@@ -374,7 +362,6 @@
         html {
           scroll-behavior: auto;
         }
-        .marquee-track,
         .horror-flicker {
           animation: none;
         }
@@ -484,7 +471,7 @@
               data-hero="eyebrow"
               class="mb-5 font-pixel text-[0.6rem] leading-relaxed text-neon-cyan sm:text-xs"
             >
-              ▸ INDIE&nbsp;GAME&nbsp;DEVELOPER&nbsp;· ITALY
+              INDIE&nbsp;GAME&nbsp;DEVELOPER&nbsp;· ITALY
             </p>
 
             <h1
@@ -565,35 +552,11 @@
         </div>
       </section>
 
-      <!-- ============ MARQUEE ============ -->
-      <div
-        class="relative z-10 overflow-hidden border-y border-white/10 bg-space-900/60 py-3 backdrop-blur"
-        aria-hidden="true"
-      >
-        <div class="marquee-track gap-0 font-pixel text-[0.6rem] text-slate-400">
-          <span class="flex shrink-0 items-center gap-8 pr-8">
-            <span class="text-grazed">GRAZED: OUT NOW</span><span class="text-neon-cyan">✦</span>
-            <span>ARCADIUM SERIES</span><span class="text-neon-magenta">✦</span>
-            <span class="text-dread">HORROR PROJECT: IN DEVELOPMENT</span><span class="text-neon-violet">✦</span>
-            <span>SOLO DEV</span><span class="text-neon-cyan">✦</span>
-            <span>MADE IN ITALY</span><span class="text-neon-magenta">✦</span>
-          </span>
-          <span class="flex shrink-0 items-center gap-8 pr-8">
-            <span class="text-grazed">GRAZED: OUT NOW</span><span class="text-neon-cyan">✦</span>
-            <span>ARCADIUM SERIES</span><span class="text-neon-magenta">✦</span>
-            <span class="text-dread">HORROR PROJECT: IN DEVELOPMENT</span><span class="text-neon-violet">✦</span>
-            <span>SOLO DEV</span><span class="text-neon-cyan">✦</span>
-            <span>MADE IN ITALY</span><span class="text-neon-magenta">✦</span>
-          </span>
-        </div>
-      </div>
-
       <!-- ============ GAMES ============ -->
-      <section id="games" class="relative z-10 mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
-        <p data-reveal class="font-pixel text-[0.6rem] text-neon-cyan sm:text-xs">▸ SELECT&nbsp;YOUR&nbsp;GAME</p>
+      <section id="games" class="relative z-10 mx-auto max-w-6xl px-5 pt-8 pb-24 sm:px-8 sm:pt-12 sm:pb-32">
         <h2
           data-reveal
-          class="mt-4 font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-6xl"
+          class="font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-6xl"
         >
           Featured <span class="text-gradient">Games</span>
         </h2>
@@ -746,8 +709,7 @@
 
         <!-- ===== Arcadium series ===== -->
         <div data-reveal class="mt-20">
-          <p class="font-pixel text-[0.6rem] text-neon-violet sm:text-xs">▸ THE&nbsp;ARCADIUM&nbsp;SERIES</p>
-          <h3 class="mt-3 font-display text-2xl font-bold text-white sm:text-3xl">
+          <h3 class="font-display text-2xl font-bold text-white sm:text-3xl">
             Three trips to deep space
           </h3>
           <p class="mt-2 max-w-2xl text-sm text-slate-400">
@@ -1032,8 +994,7 @@
         >
           <div class="grid items-center gap-8 p-7 sm:p-10 lg:grid-cols-[1fr_18rem]">
             <div>
-              <p class="font-pixel text-[0.6rem] text-dread sm:text-xs">▸ IN&nbsp;DEVELOPMENT</p>
-              <h3 class="mt-4 font-display text-3xl font-bold uppercase tracking-tight text-white sm:text-4xl">
+              <h3 class="font-display text-3xl font-bold uppercase tracking-tight text-white sm:text-4xl">
                 Something <span class="horror-flicker">darker</span> is coming
               </h3>
               <p class="mt-4 max-w-xl leading-relaxed text-slate-400">
@@ -1074,10 +1035,9 @@
         <div class="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
           <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
-              <p data-reveal class="font-pixel text-[0.6rem] text-neon-magenta sm:text-xs">▸ ABOUT&nbsp;ME</p>
               <h2
                 data-reveal
-                class="mt-4 font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl"
+                class="font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl"
               >
                 One dev, <span class="text-gradient">many worlds</span>
               </h2>
@@ -1226,10 +1186,9 @@
       <!-- ============ CONTACT ============ -->
       <section id="contact" class="relative z-10 border-t border-white/5">
         <div class="mx-auto max-w-6xl px-5 py-24 text-center sm:px-8 sm:py-32">
-          <p data-reveal class="font-pixel text-[0.6rem] text-neon-cyan sm:text-xs">▸ SAY&nbsp;HELLO</p>
           <h2
             data-reveal
-            class="mx-auto mt-4 max-w-3xl font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-6xl"
+            class="mx-auto max-w-3xl font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-6xl"
           >
             Let's make something <span class="text-gradient">stellar</span>
           </h2>
